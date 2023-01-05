@@ -26,35 +26,6 @@ public class InvSync implements ModInitializer {
     }
 
     private void initDatabase() {
-//        var sessionProperties = switch (config.DATABASE_TYPE) {
-//            case "SQLITE" -> HibernateUtil.sqliteProperties(config.SQLITE_PATH);
-//            case "MYSQL" -> HibernateUtil.mysqlProperties(
-//                    config.MYSQL_DATABASE,
-//                    config.MYSQL_ADDRESS,
-//                    config.MYSQL_PORT,
-//                    config.MYSQL_USERNAME,
-//                    config.MYSQL_PASSWORD);
-//            case "H2" -> HibernateUtil.h2Properties();
-//            default -> null;
-//        };
-//        if (sessionProperties == null) {
-//            Logger.log(Level.ERROR, MessageFormat.format("Configured database type {0} is not available", config.DATABASE_TYPE));
-//            System.exit(1);
-//            return;
-//        }
-//
-//        sessionFactory = HibernateUtil.getSessionFactory(sessionProperties);
-//        if (sessionFactory == null) {
-//            Logger.log(Level.ERROR, "Database session factory could not get initialized");
-//            System.exit(1);
-//            return;
-//        }
-//
-//        try (var session = sessionFactory.openSession()) {
-//            session.isConnected();
-//            Logger.log(Level.INFO, "Database initialized successfully!");
-//        }
-
         try {
             PersistenceUtil.registerCustomPersisters();
             database = switch (config.DATABASE_TYPE) {

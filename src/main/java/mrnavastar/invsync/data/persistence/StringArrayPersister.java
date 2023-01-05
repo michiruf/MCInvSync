@@ -1,7 +1,5 @@
 package mrnavastar.invsync.data.persistence;
 
-import com.google.gson.JsonElement;
-import com.j256.ormlite.field.types.StringType;
 import mrnavastar.invsync.data.PersistenceUtil;
 
 /**

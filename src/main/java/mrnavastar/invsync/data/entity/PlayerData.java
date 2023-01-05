@@ -1,10 +1,10 @@
 package mrnavastar.invsync.data.entity;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import mrnavastar.invsync.data.persistence.NbtCompoundPersister;
-import mrnavastar.invsync.data.persistence.NbtListPersister;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 
@@ -54,8 +54,8 @@ public class PlayerData {
     @DatabaseField
     public NbtList effects = new NbtList();
 
-//    @DatabaseField
-    public JsonElement advancements;
+    @DatabaseField
+    public JsonElement advancements = new JsonObject();
 
     @SuppressWarnings("unused")
     public PlayerData() {

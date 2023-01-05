@@ -1,21 +1,10 @@
 package mrnavastar.invsync.data.persistence;
 
-import com.j256.ormlite.field.FieldType;
-import com.j256.ormlite.field.SqlType;
-import com.j256.ormlite.field.types.BaseDataType;
-import com.j256.ormlite.field.types.DateType;
-import com.j256.ormlite.field.types.StringType;
-import com.j256.ormlite.support.DatabaseResults;
 import com.mojang.brigadier.StringReader;
 import mrnavastar.invsync.Logger;
-import mrnavastar.sqlib.api.DataContainer;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.StringNbtReader;
 import org.apache.logging.log4j.Level;
-
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * @author Michael Ruf

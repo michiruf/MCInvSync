@@ -130,7 +130,7 @@ public class InvSyncEventHandler {
             });
         }
 
-        if (false && config.SYNC_ADVANCEMENTS) {
+        if (config.SYNC_ADVANCEMENTS) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).writeAdvancementData(playerData.advancements));
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> playerData.advancements = ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).readAdvancementData());
         }

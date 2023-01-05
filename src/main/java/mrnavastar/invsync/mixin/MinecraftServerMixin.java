@@ -34,10 +34,8 @@ public abstract class MinecraftServerMixin {
             var playerData = InvSync.database.playerDataDao.queryForId(player.getUuidAsString());
             if (playerData == null)
                 playerData = new PlayerData(player.getUuid());
-            InvSyncEvents.FETCH_PLAYER_DATA.invoker().handle(player, playerData);
+            InvSyncEvents.SAVE_PLAYER_DATA.invoker().handle(player, playerData);
             InvSync.database.playerDataDao.createOrUpdate(playerData);
-
-            // ServerSyncEvents.SAVE_PLAYER_DATA.invoker().handle(player, playerData);
         } catch (SQLException e) {
             Logger.logException(Level.ERROR, e);
         }
