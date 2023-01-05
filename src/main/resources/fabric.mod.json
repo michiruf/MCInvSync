@@ -5,9 +5,12 @@
   "name": "InvSync",
   "description": "",
   "authors": [
-    "MrNavaStar"
+    "MrNavaStar",
+    "michiruf"
   ],
-  "contact": {},
+  "contact": {
+    "website": "https://github.com/michiruf"
+  },
   "license": "MIT",
   "icon": "assets/invsync/icon.png",
   "environment": "*",
