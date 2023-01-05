@@ -1,13 +1,17 @@
 package mrnavastar.invsync.data.entity;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import mrnavastar.invsync.Config;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -22,7 +26,7 @@ public class PlayerData {
     public String playerUuid;
 
     @DatabaseField
-    public String[] initializedServers;
+    public String[] initializedServers = new String[0];
 
     @DatabaseField
     public Date date;
@@ -54,6 +58,9 @@ public class PlayerData {
     @DatabaseField
     public NbtList effects = new NbtList();
 
+    /*
+     * JsonNull.INSTANCE should be the most clear initial value, but then things break
+     */
     @DatabaseField
     public JsonElement advancements = new JsonObject();
 
@@ -64,5 +71,14 @@ public class PlayerData {
 
     public PlayerData(UUID id) {
         playerUuid = id.toString();
+    }
+
+    public void prepareSave(Config config) {
+        date = java.sql.Date.from(Instant.now());
+
+        if (config.INITIAL_SYNC_OVERWRITE_ENABLED &&
+                !Arrays.asList(initializedServers).contains(config.INITIAL_SYNC_SERVER_NAME)) {
+            initializedServers = ArrayUtils.add(initializedServers, config.INITIAL_SYNC_SERVER_NAME);
+        }
     }
 }

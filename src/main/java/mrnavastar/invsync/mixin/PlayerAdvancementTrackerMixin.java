@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import mrnavastar.invsync.InvSync;
 import mrnavastar.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementProgress;
@@ -19,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-
-import static mrnavastar.invsync.InvSync.advancementLoader;
 
 @Mixin(PlayerAdvancementTracker.class)
 public abstract class PlayerAdvancementTrackerMixin implements PlayerAdvancementTrackerAccessor {
@@ -83,14 +82,14 @@ public abstract class PlayerAdvancementTrackerMixin implements PlayerAdvancement
         Map<Identifier, AdvancementProgress> map = GSON.getAdapter(JSON_TYPE).fromJsonTree(advancementData);
         Stream<Map.Entry<Identifier, AdvancementProgress>> stream = map.entrySet().stream().sorted(Map.Entry.comparingByValue());
         for (Map.Entry<Identifier, AdvancementProgress> entry : stream.toList()) {
-            Advancement advancement = advancementLoader.get(entry.getKey());
+            Advancement advancement = InvSync.instance.advancementLoader.get(entry.getKey());
             if (advancement == null)
                 continue;
             this.initProgress(advancement, entry.getValue());
         }
-        this.rewardEmptyAdvancements(advancementLoader);
+        this.rewardEmptyAdvancements(InvSync.instance.advancementLoader);
         this.updateCompleted();
-        this.beginTrackingAllAdvancements(advancementLoader);
+        this.beginTrackingAllAdvancements(InvSync.instance.advancementLoader);
     }
 
     @Override

@@ -29,8 +29,6 @@ public class Config implements ConfigData {
     public boolean SYNC_ADVANCEMENTS = true;
 
     @Comment("Initial synchronization settings")
-    public boolean INITIAL_SYNC_ENABLED = true;
-    @Comment("Allowed values: \"SKIP\" | \"OVERWRITE\"")
-    public String INITIAL_SYNC_MODE = "SKIP";
+    public boolean INITIAL_SYNC_OVERWRITE_ENABLED = false;
     public String INITIAL_SYNC_SERVER_NAME = "undefined";
 }

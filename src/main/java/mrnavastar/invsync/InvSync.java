@@ -3,7 +3,8 @@ package mrnavastar.invsync;
 import mc.microconfig.MicroConfig;
 import mrnavastar.invsync.data.ORMLite;
 import mrnavastar.invsync.data.PersistenceUtil;
-import mrnavastar.invsync.event.InvSyncEventHandler;
+import mrnavastar.invsync.event.DelegatingEventsHandler;
+import mrnavastar.invsync.event.InvSyncEventsHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.ServerAdvancementLoader;
@@ -13,13 +14,16 @@ import java.text.MessageFormat;
 
 public class InvSync implements ModInitializer {
 
-    public static Config config = MicroConfig.getOrCreate(InvSync.class.getSimpleName(), new Config());
-    public static ORMLite database;
-    public static ServerAdvancementLoader advancementLoader;
+    public static InvSync instance;
+
+    public Config config = MicroConfig.getOrCreate(InvSync.class.getSimpleName(), new Config());
+    public ORMLite database;
+    public ServerAdvancementLoader advancementLoader;
 
     @Override
     public void onInitialize() {
         Logger.log(Level.INFO, "Initializing InvSync...");
+        instance = this;
         initDatabase();
         registerEvents();
         Logger.log(Level.INFO, "Initialized InvSync");
@@ -54,7 +58,7 @@ public class InvSync implements ModInitializer {
 
     private void registerEvents() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> advancementLoader = server.getAdvancementLoader());
-        InvSyncEventHandler.registerMinecraftEvents(database);
-        InvSyncEventHandler.registerInvSyncEvents(config);
+        DelegatingEventsHandler.registerMinecraftEvents(database, config);
+        InvSyncEventsHandler.registerEvents(config);
     }
 }
