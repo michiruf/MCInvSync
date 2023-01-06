@@ -4,7 +4,7 @@
 
 # InvSync
 
-<img src="https://github.com/michiruf/MCInvSync/blob/master/src/main/resources/assets/invsync/icon.png" width="300" height="300">
+<img src="https://raw.githubusercontent.com/michiruf/MCInvSync/master/src/main/resources/assets/invsync/icon.png" width="300" height="300">
 
 This is a fabric mod that Allows you to sync player inventories, health, food level, experience, score, status effects
 and advancements across multiple servers or single player minecraft worlds! This is accomplished using a sql database
