@@ -1,7 +1,7 @@
-package mrnavastar.invsync.data.persistence;
+package de.michiruf.invsync.data.persistence;
 
 import com.google.gson.JsonElement;
-import mrnavastar.invsync.data.PersistenceUtil;
+import de.michiruf.invsync.data.PersistenceUtil;
 
 /**
  * @author Michael Ruf

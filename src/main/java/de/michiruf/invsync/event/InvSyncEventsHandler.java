@@ -1,7 +1,7 @@
-package mrnavastar.invsync.event;
+package de.michiruf.invsync.event;
 
-import mrnavastar.invsync.Config;
-import mrnavastar.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
+import de.michiruf.invsync.Config;
+import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;

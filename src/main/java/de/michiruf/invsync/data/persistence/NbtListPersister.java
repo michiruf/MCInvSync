@@ -1,7 +1,7 @@
-package mrnavastar.invsync.data.persistence;
+package de.michiruf.invsync.data.persistence;
 
 import com.mojang.brigadier.StringReader;
-import mrnavastar.invsync.Logger;
+import de.michiruf.invsync.Logger;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.StringNbtReader;
 import org.apache.logging.log4j.Level;

@@ -1,4 +1,4 @@
-package mrnavastar.invsync.data.persistence;
+package de.michiruf.invsync.data.persistence;
 
 import com.j256.ormlite.field.FieldType;
 import com.j256.ormlite.field.SqlType;

@@ -1,7 +1,7 @@
-package mrnavastar.invsync.mixin;
+package de.michiruf.invsync.mixin;
 
-import mrnavastar.invsync.InvSync;
-import mrnavastar.invsync.event.PlayerDataService;
+import de.michiruf.invsync.InvSync;
+import de.michiruf.invsync.event.PlayerDataService;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,9 +1,9 @@
-package mrnavastar.invsync.event;
+package de.michiruf.invsync.event;
 
-import mrnavastar.invsync.Config;
-import mrnavastar.invsync.Logger;
-import mrnavastar.invsync.data.ORMLite;
-import mrnavastar.invsync.data.entity.PlayerData;
+import de.michiruf.invsync.data.ORMLite;
+import de.michiruf.invsync.data.entity.PlayerData;
+import de.michiruf.invsync.Config;
+import de.michiruf.invsync.Logger;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.Level;
 

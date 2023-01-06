@@ -1,37 +1,68 @@
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)\
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 
-[![name](https://github.com/modrinth/art/blob/main/Branding/Badge/badge-dark__184x72.png?raw=true)](https://modrinth.com/mod/invsync)
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G4DZF4D)
-
-<img src="https://github.com/MrNavaStar/invSync/blob/master/src/main/resources/assets/invsync/icon.png" width="300" height="300">
 
 # InvSync
 
-This is a fabric mod that Allows you to sync player inventories, health, food level, experience, score, status effects and advancements across multiple servers or single player minecraft worlds! This is accomplished using an sql database (SQLite and MySQL supported. SQLite will be setup automatically, you must set up MySQL). Most mods should have no problem running along side, and modded items will also be sync'd.
+<img src="https://github.com/michiruf/MCInvSync/blob/master/src/main/resources/assets/invsync/icon.png" width="300" height="300">
 
-This mod uses [SQLib](https://github.com/MrNavaStar/SQLib) as a backend. Feel free to use it in your own projects!
+This is a fabric mod that Allows you to sync player inventories, health, food level, experience, score, status effects
+and advancements across multiple servers or single player minecraft worlds! This is accomplished using a sql database
+(SQLite and MySQL supported. SQLite will be setup automatically, you must set up MySQL). Most mods should have no
+problem running alongside, and modded items will also be synchronized.
 
-## Support Me
+[![name](https://github.com/modrinth/art/blob/main/Branding/Badge/badge-dark__184x72.png?raw=true)](https://modrinth.com/mod/mr-invsync)
 
-You can support me by [buying me a coffee!](https://ko-fi.com/mrnavastar)
+
+## Support MrNavaStar
+
+This mod was initially forked from MrNavaStar.
+You can support MrNavaStar by [buying him a coffee!](https://ko-fi.com/mrnavastar)
+His original mod can be found [here](https://modrinth.com/mod/invsync).
+
 
 ## Requirements
 
-- This mod requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) 
-- You can get the mod on [Modrith](https://modrinth.com/mod/invsync)
+* This mod requires [Fabric API](https://modrinth.com/mod/fabric-api)
+* You can get the mod on [Modrith](https://modrinth.com/mod/mr-invsync)
+
 
 ## Getting Started
 
-Setup is very simple. Drop the mod into your mods folder on all the servers you want to sync. Starting a server will generate a config. The mod will not run until you edit the config.
+Setup is very simple. Drop the mod into your mods folder on all the servers you want to sync. Starting a server will
+generate a config. The mod will not run until you edit the config.
 
-## IMPORTANT NOTES 
+* Configs MUST be identical between all participating servers in order for the mod to function correctly.
+* This mod is known to have issues with: **GolfV**
 
-- Configs MUST be identical between all participating servers in order for the mod to function correctly.
-- This mod is known to have issues with: **GolfV**
+
+## Example configuration
+
+Path: `/config/InvSync.mcfg`
+
+```properties
+DATABASE_TYPE=SQLITE
+SQLITE_PATH=./InvSync.db
+MYSQL_DATABASE=InvSync
+MYSQL_ADDRESS=database-host
+MYSQL_PORT=3306
+MYSQL_USERNAME=username
+MYSQL_PASSWORD=password
+SYNC_INVENTORY=true
+SYNC_ENDER_CHEST=true
+SYNC_HEALTH=true
+SYNC_FOOD_LEVEL=true
+SYNC_XP_LEVEL=true
+SYNC_SCORE=true
+SYNC_STATUS_EFFECTS=true
+SYNC_ADVANCEMENTS=true
+SYNCHRONIZATION_DELAY=true
+SYNCHRONIZATION_DELAY_SECONDS=1
+INITIAL_SYNC_OVERWRITE_ENABLED=true
+INITIAL_SYNC_SERVER_NAME=1
+```
 
 ## Issues And Requests
 
-If you find any bugs or glitches, be sure to make a bug report under issues and I will do my best to fix it! Just as well if you have a cool idea for something that I should add, let me know and I will consider adding it!
+If you find any bugs or glitches, be sure to make a bug report under issues and I will do my best to fix it! Just as
+well if you have a cool idea for something that I should add, let me know and I will consider adding it!

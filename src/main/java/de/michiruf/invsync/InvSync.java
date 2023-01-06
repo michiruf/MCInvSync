@@ -1,10 +1,10 @@
-package mrnavastar.invsync;
+package de.michiruf.invsync;
 
+import de.michiruf.invsync.data.ORMLite;
+import de.michiruf.invsync.data.PersistenceUtil;
+import de.michiruf.invsync.event.DelegatingEventsHandler;
+import de.michiruf.invsync.event.InvSyncEventsHandler;
 import mc.microconfig.MicroConfig;
-import mrnavastar.invsync.data.ORMLite;
-import mrnavastar.invsync.data.PersistenceUtil;
-import mrnavastar.invsync.event.DelegatingEventsHandler;
-import mrnavastar.invsync.event.InvSyncEventsHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.ServerAdvancementLoader;

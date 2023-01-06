@@ -1,6 +1,6 @@
-package mrnavastar.invsync.event;
+package de.michiruf.invsync.event;
 
-import mrnavastar.invsync.data.entity.PlayerData;
+import de.michiruf.invsync.data.entity.PlayerData;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.network.ServerPlayerEntity;

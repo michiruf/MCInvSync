@@ -5,8 +5,8 @@
   "name": "InvSync",
   "description": "",
   "authors": [
-    "MrNavaStar",
-    "michiruf"
+    "michiruf",
+    "MrNavaStar"
   ],
   "contact": {
     "website": "https://github.com/michiruf"
@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "mrnavastar.invsync.InvSync"
+      "de.michiruf.invsync.InvSync"
     ]
   },
   "mixins": [

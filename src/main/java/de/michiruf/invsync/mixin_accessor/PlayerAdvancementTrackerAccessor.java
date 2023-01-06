@@ -1,4 +1,4 @@
-package mrnavastar.invsync.mixin_accessor;
+package de.michiruf.invsync.mixin_accessor;
 
 import com.google.gson.JsonElement;
 

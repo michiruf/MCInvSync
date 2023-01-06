@@ -1,10 +1,8 @@
-package mrnavastar.invsync.event;
+package de.michiruf.invsync.event;
 
-import mrnavastar.invsync.Config;
-import mrnavastar.invsync.data.ORMLite;
+import de.michiruf.invsync.data.ORMLite;
+import de.michiruf.invsync.Config;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Michael Ruf

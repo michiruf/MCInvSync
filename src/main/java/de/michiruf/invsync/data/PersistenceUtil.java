@@ -1,11 +1,11 @@
-package mrnavastar.invsync.data;
+package de.michiruf.invsync.data;
 
 import com.google.gson.Gson;
 import com.j256.ormlite.field.DataPersisterManager;
-import mrnavastar.invsync.data.persistence.JsonElementPersister;
-import mrnavastar.invsync.data.persistence.NbtCompoundPersister;
-import mrnavastar.invsync.data.persistence.NbtListPersister;
-import mrnavastar.invsync.data.persistence.StringArrayPersister;
+import de.michiruf.invsync.data.persistence.JsonElementPersister;
+import de.michiruf.invsync.data.persistence.NbtCompoundPersister;
+import de.michiruf.invsync.data.persistence.NbtListPersister;
+import de.michiruf.invsync.data.persistence.StringArrayPersister;
 
 /**
  * @author Michael Ruf

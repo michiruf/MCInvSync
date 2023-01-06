@@ -1,11 +1,11 @@
-package mrnavastar.invsync.mixin;
+package de.michiruf.invsync.mixin;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import mrnavastar.invsync.InvSync;
-import mrnavastar.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
+import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
+import de.michiruf.invsync.InvSync;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.advancement.PlayerAdvancementTracker;

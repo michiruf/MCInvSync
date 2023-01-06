@@ -1,16 +1,15 @@
-package mrnavastar.invsync.data.entity;
+package de.michiruf.invsync.data.entity;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import mrnavastar.invsync.Config;
+import de.michiruf.invsync.Config;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
