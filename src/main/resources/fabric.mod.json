@@ -5,15 +5,18 @@
   "name": "InvSync",
   "description": "",
   "authors": [
+    "michiruf",
     "MrNavaStar"
   ],
-  "contact": {},
+  "contact": {
+    "website": "https://github.com/michiruf"
+  },
   "license": "MIT",
   "icon": "assets/invsync/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "mrnavastar.invsync.InvSync"
+      "de.michiruf.invsync.InvSync"
     ]
   },
   "mixins": [

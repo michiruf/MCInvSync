@@ -1,8 +1,10 @@
-package mrnavastar.invsync.interfaces;
+package de.michiruf.invsync.mixin_accessor;
 
 import com.google.gson.JsonElement;
 
-public interface PlayerAdvancementTrackerInf {
+public interface PlayerAdvancementTrackerAccessor {
+
     void writeAdvancementData(JsonElement advancementData);
+
     JsonElement readAdvancementData();
 }
