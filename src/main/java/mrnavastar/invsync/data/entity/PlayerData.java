@@ -25,7 +25,7 @@ public class PlayerData {
     @DatabaseField(id = true)
     public String playerUuid;
 
-    @DatabaseField
+    @DatabaseField(width = 1000)
     public String[] initializedServers = new String[0];
 
     @DatabaseField
@@ -58,9 +58,7 @@ public class PlayerData {
     @DatabaseField
     public NbtList effects = new NbtList();
 
-    /*
-     * JsonNull.INSTANCE should be the most clear initial value, but then things break
-     */
+    // JsonNull.INSTANCE should be the most clear initial value, but then things might break
     @DatabaseField
     public JsonElement advancements = new JsonObject();
 

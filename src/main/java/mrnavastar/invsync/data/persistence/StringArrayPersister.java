@@ -16,7 +16,7 @@ public class StringArrayPersister extends AbstractStringPersister<String[]> {
     }
 
     private StringArrayPersister() {
-        super(new Class[]{String[].class});
+        super(new Class[]{String[].class}, false);
     }
 
     @Override

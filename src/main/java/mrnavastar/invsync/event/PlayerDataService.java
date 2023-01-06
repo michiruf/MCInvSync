@@ -19,11 +19,19 @@ public class PlayerDataService {
     public static void loadPlayer(ServerPlayerEntity player, ORMLite database, Config config) {
         Logger.log(Level.DEBUG, "Player JOIN event received");
 
+        if(!config.SYNCHRONIZATION_DELAY) {
+            loadPlayerImpl(player, database, config);
+            return;
+        }
+        // The reason, why this delay is needed, is that some proxy server might connect
+        // the player to the next server before disconnecting the player from the previous
+        // server. To avoid race conditions, we just go for a timeout on loading the new
+        // inventory data
         // Unfortunately, fabric does not have a scheduler, so we just go with the good old
         // plain java thread and sleep
         new Thread(() -> {
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(config.SYNCHRONIZATION_DELAY_SECONDS);
                 loadPlayerImpl(player, database, config);
             } catch (InterruptedException e) {
                 Logger.logException(Level.ERROR, e);

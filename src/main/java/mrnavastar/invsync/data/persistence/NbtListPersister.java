@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Level;
  */
 public class NbtListPersister extends AbstractStringPersister<NbtList> {
 
-    private static final int WIDTH = 1000;
     private static final NbtListPersister singleTon = new NbtListPersister();
 
     @SuppressWarnings("unused")
@@ -21,12 +20,7 @@ public class NbtListPersister extends AbstractStringPersister<NbtList> {
     }
 
     private NbtListPersister() {
-        super(new Class[]{NbtList.class});
-    }
-
-    @Override
-    public int getDefaultWidth() {
-        return WIDTH;
+        super(new Class[]{NbtList.class}, true);
     }
 
     @Override

@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Level;
  */
 public class NbtCompoundPersister extends AbstractStringPersister<NbtCompound> {
 
-    private static final int WIDTH = 1000;
     private static final NbtCompoundPersister singleTon = new NbtCompoundPersister();
 
     @SuppressWarnings("unused")
@@ -21,12 +20,7 @@ public class NbtCompoundPersister extends AbstractStringPersister<NbtCompound> {
     }
 
     private NbtCompoundPersister() {
-        super(new Class[]{NbtCompound.class});
-    }
-
-    @Override
-    public int getDefaultWidth() {
-        return WIDTH;
+        super(new Class[]{NbtCompound.class}, true);
     }
 
     @Override

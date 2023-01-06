@@ -5,7 +5,7 @@ import mc.microconfig.ConfigData;
 
 public class Config implements ConfigData {
 
-    @Comment("Allowed values: \"SQLITE\" | \"MYSQL\" | \"H2\"")
+    @Comment("Allowed values: \"SQLITE\" | \"MYSQL\"")
     public String DATABASE_TYPE = "H2";
 
     // Sqlite
@@ -27,6 +27,8 @@ public class Config implements ConfigData {
     public boolean SYNC_SCORE = true;
     public boolean SYNC_STATUS_EFFECTS = true;
     public boolean SYNC_ADVANCEMENTS = true;
+    public boolean SYNCHRONIZATION_DELAY = true;
+    public int SYNCHRONIZATION_DELAY_SECONDS = 1;
 
     @Comment("Initial synchronization settings")
     public boolean INITIAL_SYNC_OVERWRITE_ENABLED = false;

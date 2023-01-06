@@ -10,8 +10,8 @@ import com.j256.ormlite.field.types.StringType;
  */
 public abstract class AbstractStringPersister<T> extends StringType {
 
-    protected AbstractStringPersister(Class<?>[] classes) {
-        super(SqlType.STRING, classes);
+    protected AbstractStringPersister(Class<?>[] classes, boolean useLongString) {
+        super(useLongString ? SqlType.LONG_STRING : SqlType.STRING, classes);
     }
 
     @SuppressWarnings("unchecked")

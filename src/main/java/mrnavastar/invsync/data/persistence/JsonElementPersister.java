@@ -9,7 +9,6 @@ import mrnavastar.invsync.data.PersistenceUtil;
  */
 public class JsonElementPersister extends AbstractStringPersister<JsonElement> {
 
-    private static final int WIDTH = 1000;
     private static final JsonElementPersister singleTon = new JsonElementPersister();
 
     @SuppressWarnings("unused")
@@ -18,12 +17,7 @@ public class JsonElementPersister extends AbstractStringPersister<JsonElement> {
     }
 
     private JsonElementPersister() {
-        super(new Class[]{JsonElement.class});
-    }
-
-    @Override
-    public int getDefaultWidth() {
-        return WIDTH;
+        super(new Class[]{JsonElement.class}, true);
     }
 
     @Override
