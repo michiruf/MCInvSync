@@ -14,12 +14,18 @@ problem running alongside, and modded items will also be synchronized.
 [![name](https://github.com/modrinth/art/blob/main/Branding/Badge/badge-dark__184x72.png?raw=true)](https://modrinth.com/mod/mr-invsync)
 
 
-## Support MrNavaStar
+## Why this fork?
 
-This mod was initially forked from MrNavaStar.
+This mod was initially forked from MrNavaStar. His original mod can be found on 
+[github](https://github.com/MrNavaStar/InvSync) and [modrinth](https://modrinth.com/mod/invsync).
+Reasons for this fork are:
+
+* Source Code was not published on release (see [here](https://github.com/MrNavaStar/InvSync/issues/21))
+* The mod caused the server thread to sleep on player join, which got fixed, but the sleep call was still in the repository
+* Database handling was messed up by using an all-in-one table for the player data defined in [SQLib](https://github.com/MrNavaStar/SQLib)
+* For each SQL call a database connection was established
+
 You can support MrNavaStar by [buying him a coffee!](https://ko-fi.com/mrnavastar)
-His original mod can be found [here](https://modrinth.com/mod/invsync).
-
 
 ## Requirements
 
@@ -59,7 +65,7 @@ SYNC_ADVANCEMENTS=true
 SYNCHRONIZATION_DELAY=true
 SYNCHRONIZATION_DELAY_SECONDS=1
 INITIAL_SYNC_OVERWRITE_ENABLED=true
-INITIAL_SYNC_SERVER_NAME=1
+INITIAL_SYNC_SERVER_NAME=ServerA
 ```
 
 ## Issues And Requests
