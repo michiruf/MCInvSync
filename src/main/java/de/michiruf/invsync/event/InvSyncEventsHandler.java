@@ -60,6 +60,8 @@ public class InvSyncEventsHandler {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {
                 player.experienceLevel = playerData.xp;
                 player.experienceProgress = playerData.xpProgress;
+                // Add 0 experience to trigger a synchronization to the player and also clamp the value
+                player.addExperience(0);
             });
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> {
                 playerData.xp = player.experienceLevel;
