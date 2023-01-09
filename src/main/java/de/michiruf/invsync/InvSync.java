@@ -33,20 +33,21 @@ public class InvSync implements ModInitializer {
         try {
             PersistenceUtil.registerCustomPersisters();
             database = switch (config.DATABASE_TYPE) {
-                case "SQLITE" -> ORMLite.connectSQLITE(config.SQLITE_PATH);
+                case "SQLITE" -> ORMLite.connectSQLITE(config.SQLITE_PATH, config.DEBUG_DELETE_TABLES);
                 case "MYSQL" -> ORMLite.connectMySQL(
                         config.MYSQL_DATABASE,
                         config.MYSQL_ADDRESS,
                         config.MYSQL_PORT,
                         config.MYSQL_USERNAME,
-                        config.MYSQL_PASSWORD);
-//                case "POSTGRES" -> throw new IllegalArgumentException("POSTGRES not yet supported");
+                        config.MYSQL_PASSWORD,
+                        config.DEBUG_DELETE_TABLES);
                 case "POSTGRES" -> ORMLite.connectPostgres(
                         config.POSTGRES_DATABASE,
                         config.POSTGRES_ADDRESS,
                         config.POSTGRES_PORT,
                         config.POSTGRES_USERNAME,
-                        config.POSTGRES_PASSWORD);
+                        config.POSTGRES_PASSWORD,
+                        config.DEBUG_DELETE_TABLES);
                 default -> null;
             };
         } catch (Exception e) {

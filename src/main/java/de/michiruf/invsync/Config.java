@@ -7,6 +7,7 @@ public class Config implements ConfigData {
 
     @Comment("Allowed values: \"SQLITE\" | \"MYSQL\" | \"POSTGRES\"")
     public String DATABASE_TYPE = "SQLITE";
+    public boolean DEBUG_DELETE_TABLES = false;
 
     // Sqlite
     public String SQLITE_PATH = "/path/to/database/InvSync.db";

@@ -19,35 +19,37 @@ import java.util.function.Consumer;
  */
 public class ORMLite implements AutoCloseable {
 
-    public static ORMLite connectSQLITE(String filename) throws Exception {
+    public static ORMLite connectSQLITE(String filename, boolean debugDeleteTables) throws Exception {
         var url = MessageFormat.format("jdbc:sqlite:{0}", filename);
         try (var connection = new JdbcConnectionSource(url)) {
-            return new ORMLite(connection);
+            return new ORMLite(connection, debugDeleteTables);
         }
     }
 
-    public static ORMLite connectMySQL(String database, String host, String port, String username, String password) throws Exception {
+    public static ORMLite connectMySQL(String database, String host, String port, String username, String password, boolean debugDeleteTables) throws Exception {
         var url = MessageFormat.format("jdbc:mysql://{1}:{2}/{0}?serverTimezone=UTC", database, host, port);
         try (var connection = new JdbcConnectionSource(url, username, password)) {
-            return new ORMLite(connection);
+            return new ORMLite(connection, debugDeleteTables);
         }
     }
 
-    public static ORMLite connectPostgres(String database, String host, String port, String username, String password) throws Exception {
+    public static ORMLite connectPostgres(String database, String host, String port, String username, String password, boolean debugDeleteTables) throws Exception {
         var url = MessageFormat.format("jdbc:postgresql://{1}:{2}/{0}?serverTimezone=UTC", database, host, port);
         try (var connection = new JdbcConnectionSource(url, username, password)) {
-            return new ORMLite(connection);
+            return new ORMLite(connection, debugDeleteTables);
         }
     }
 
     private final ConnectionSource connection;
     public final Dao<PlayerData, String> playerDataDao;
 
-    public ORMLite(JdbcConnectionSource connection) throws SQLException {
+    public ORMLite(JdbcConnectionSource connection, boolean debugDeleteTables) throws SQLException {
         this.connection = connection;
 
         var playerDataConfig = OverloadableDatabaseTableConfig.fromClass(
                 connection.getDatabaseType(), PlayerData.class);
+        if (debugDeleteTables)
+            TableUtils.dropTable(connection, playerDataConfig, true);
         TableUtils.createTableIfNotExists(connection, playerDataConfig);
         playerDataDao = DaoManager.createDao(connection, playerDataConfig);
     }
