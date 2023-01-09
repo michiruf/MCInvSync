@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import de.michiruf.invsync.Config;
+import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificDatabaseField;
+import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificOverload;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import org.apache.commons.lang3.ArrayUtils;
@@ -18,7 +20,7 @@ import java.util.UUID;
  * @author Michael Ruf
  * @since 2023-01-05
  */
-@DatabaseTable(tableName = "player")
+@DatabaseTable(tableName = "player_data")
 public class PlayerData {
 
     @DatabaseField(id = true)
@@ -31,12 +33,24 @@ public class PlayerData {
     public Date date;
 
     @DatabaseField
+    @DatabaseTypeSpecificDatabaseField({
+            @DatabaseTypeSpecificOverload(
+                    typeName = "MySQL",
+                    databaseField = @DatabaseField(columnDefinition = "LONGTEXT")
+            )
+    })
     public NbtList inventory = new NbtList();
 
     @DatabaseField
     public int selectedSlot;
 
     @DatabaseField
+    @DatabaseTypeSpecificDatabaseField({
+            @DatabaseTypeSpecificOverload(
+                    typeName = "MySQL",
+                    databaseField = @DatabaseField(columnDefinition = "LONGTEXT")
+            )
+    })
     public NbtList enderChest = new NbtList();
 
     @DatabaseField
@@ -55,10 +69,22 @@ public class PlayerData {
     public float xpProgress;
 
     @DatabaseField
+    @DatabaseTypeSpecificDatabaseField({
+            @DatabaseTypeSpecificOverload(
+                    typeName = "MySQL",
+                    databaseField = @DatabaseField(columnDefinition = "LONGTEXT")
+            )
+    })
     public NbtList effects = new NbtList();
 
     // JsonNull.INSTANCE should be the most clear initial value, but then things might break
     @DatabaseField
+    @DatabaseTypeSpecificDatabaseField({
+            @DatabaseTypeSpecificOverload(
+                    typeName = "MySQL",
+                    databaseField = @DatabaseField(columnDefinition = "LONGTEXT")
+            )
+    })
     public JsonElement advancements = new JsonObject();
 
     @SuppressWarnings("unused")

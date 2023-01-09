@@ -1,7 +1,7 @@
 package de.michiruf.invsync.event;
 
-import de.michiruf.invsync.data.ORMLite;
 import de.michiruf.invsync.Config;
+import de.michiruf.invsync.data.ORMLite;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 /**

@@ -6,6 +6,7 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import de.michiruf.invsync.data.custom_schema.OverloadableDatabaseTableConfig;
 import de.michiruf.invsync.data.entity.PlayerData;
 
 import java.sql.SQLException;
@@ -18,13 +19,6 @@ import java.util.function.Consumer;
  */
 public class ORMLite implements AutoCloseable {
 
-    public static ORMLite connectMySQL(String database, String host, String port, String username, String password) throws Exception {
-        var url = MessageFormat.format("jdbc:mysql://{1}:{2}/{0}?serverTimezone=UTC", database, host, port);
-        try (var connection = new JdbcConnectionSource(url, username, password)) {
-            return new ORMLite(connection);
-        }
-    }
-
     public static ORMLite connectSQLITE(String filename) throws Exception {
         var url = MessageFormat.format("jdbc:sqlite:{0}", filename);
         try (var connection = new JdbcConnectionSource(url)) {
@@ -32,9 +26,16 @@ public class ORMLite implements AutoCloseable {
         }
     }
 
-    public static ORMLite connectH2() throws Exception {
-        var url = "jdbc:h2:mem:invsync";
-        try (var connection = new JdbcConnectionSource(url)) {
+    public static ORMLite connectMySQL(String database, String host, String port, String username, String password) throws Exception {
+        var url = MessageFormat.format("jdbc:mysql://{1}:{2}/{0}?serverTimezone=UTC", database, host, port);
+        try (var connection = new JdbcConnectionSource(url, username, password)) {
+            return new ORMLite(connection);
+        }
+    }
+
+    public static ORMLite connectPostgres(String database, String host, String port, String username, String password) throws Exception {
+        var url = MessageFormat.format("jdbc:postgresql://{1}:{2}/{0}?serverTimezone=UTC", database, host, port);
+        try (var connection = new JdbcConnectionSource(url, username, password)) {
             return new ORMLite(connection);
         }
     }
@@ -44,8 +45,11 @@ public class ORMLite implements AutoCloseable {
 
     public ORMLite(JdbcConnectionSource connection) throws SQLException {
         this.connection = connection;
-        TableUtils.createTableIfNotExists(connection, PlayerData.class);
-        playerDataDao = DaoManager.createDao(connection, PlayerData.class);
+
+        var playerDataConfig = OverloadableDatabaseTableConfig.fromClass(
+                connection.getDatabaseType(), PlayerData.class);
+        TableUtils.createTableIfNotExists(connection, playerDataConfig);
+        playerDataDao = DaoManager.createDao(connection, playerDataConfig);
     }
 
     public void transaction(Runnable transaction) {

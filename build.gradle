@@ -69,8 +69,9 @@ dependencies {
 
     // OrmLite
     modImplementation(include('com.j256.ormlite:ormlite-jdbc:6.1'))
-    modImplementation(include('mysql:mysql-connector-java:8.0.30'))
     modImplementation(include('org.xerial:sqlite-jdbc:3.40.0.0'))
+    modImplementation(include('mysql:mysql-connector-java:8.0.30'))
+    modImplementation(include('org.postgresql:postgresql:42.5.1'))
 
     // Tests
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'

@@ -40,7 +40,13 @@ public class InvSync implements ModInitializer {
                         config.MYSQL_PORT,
                         config.MYSQL_USERNAME,
                         config.MYSQL_PASSWORD);
-                case "H2" -> ORMLite.connectH2();
+//                case "POSTGRES" -> throw new IllegalArgumentException("POSTGRES not yet supported");
+                case "POSTGRES" -> ORMLite.connectPostgres(
+                        config.POSTGRES_DATABASE,
+                        config.POSTGRES_ADDRESS,
+                        config.POSTGRES_PORT,
+                        config.POSTGRES_USERNAME,
+                        config.POSTGRES_PASSWORD);
                 default -> null;
             };
         } catch (Exception e) {
@@ -61,4 +67,16 @@ public class InvSync implements ModInitializer {
         DelegatingEventsHandler.registerMinecraftEvents(database, config);
         InvSyncEventsHandler.registerEvents(config);
     }
+
+    // TODO Register a command to synchronize offline players
+//    private static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
+//        LiteralCommandNode<ServerCommandSource> proxyCommand = CommandManager
+//                .literal("invsync")
+//                .requires(cmd -> cmd.hasPermissionLevel(4))
+//                .then(CommandManager.argument("command", StringArgumentType.string())
+//                        .executes(ProxyCommandMod::sendMessage)
+//                        .build())
+//                .build();
+//        dispatcher.getRoot().addChild(proxyCommand);
+//    }
 }

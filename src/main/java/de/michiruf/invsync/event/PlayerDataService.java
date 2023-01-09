@@ -1,9 +1,9 @@
 package de.michiruf.invsync.event;
 
-import de.michiruf.invsync.data.ORMLite;
-import de.michiruf.invsync.data.entity.PlayerData;
 import de.michiruf.invsync.Config;
 import de.michiruf.invsync.Logger;
+import de.michiruf.invsync.data.ORMLite;
+import de.michiruf.invsync.data.entity.PlayerData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.Level;
 
@@ -19,7 +19,7 @@ public class PlayerDataService {
     public static void loadPlayer(ServerPlayerEntity player, ORMLite database, Config config) {
         Logger.log(Level.DEBUG, "Player JOIN event received");
 
-        if(!config.SYNCHRONIZATION_DELAY) {
+        if (!config.SYNCHRONIZATION_DELAY) {
             loadPlayerImpl(player, database, config);
             return;
         }

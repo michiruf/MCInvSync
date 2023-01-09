@@ -1,5 +1,5 @@
-db:
-  container_name: db
+mysql:
+  container_name: mysql
   image: mysql:5.7
   ports:
     - '3306:3306'
@@ -14,18 +14,48 @@ db:
   tty: true
   restart: always
 
-phpmyadmin:
+mysqladmin:
   container_name: phpmyadmin
   image: phpmyadmin/phpmyadmin
   ports:
     - '8080:80'
   environment:
-    - PMA_HOST=db
+    - PMA_HOST=mysql
     - PMA_USER=username
     - PMA_PASSWORD=password
   volumes:
     - '/etc/timezone:/etc/timezone:ro'
   links:
-    - db
+    - mysql
+  tty: true
+  restart: always
+
+
+postgres:
+  container_name: postgres
+  image: postgres
+  ports:
+    - '5432:5432'
+  environment:
+    - POSTGRES_DB=InvSync
+    - POSTGRES_USER=username
+    - POSTGRES_PASSWORD=password
+  tty: true
+  restart: always
+
+postgresadmin:
+  container_name: postgresadmin
+  image: wodby/adminer
+  ports:
+    - '8081:9000'
+  environment:
+    - ADMINER_DEFAULT_DB_DRIVER=pgsql
+    - ADMINER_DEFAULT_DB_HOST=postgres
+    - ADMINER_DEFAULT_DB_NAME=InvSync
+    #- ADMINER_DEFAULT_USER=username
+    #- ADMINER_DEFAULT_PASSWORD=password
+    - ADMINER_DESIGN=nette
+  links:
+    - postgres
   tty: true
   restart: always

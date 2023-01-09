@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
 import de.michiruf.invsync.InvSync;
+import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.advancement.PlayerAdvancementTracker;
@@ -71,6 +71,8 @@ public abstract class PlayerAdvancementTrackerMixin implements PlayerAdvancement
 
     @Override
     public void writeAdvancementData(JsonElement advancementData) {
+        // TODO This triggers advancement notifications and might should not?
+
         this.clearCriteria();
         this.advancementToProgress.clear();
         this.visibleAdvancements.clear();

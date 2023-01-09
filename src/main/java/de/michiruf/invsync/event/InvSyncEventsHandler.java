@@ -1,11 +1,13 @@
 package de.michiruf.invsync.event;
 
+import com.mojang.authlib.GameProfile;
 import de.michiruf.invsync.Config;
 import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.network.encryption.PlayerPublicKey;
 
 /**
  * @author Michael Ruf
@@ -13,6 +15,11 @@ import net.minecraft.nbt.NbtList;
  */
 public class InvSyncEventsHandler {
 
+    /**
+     * @param config Plugin configuration
+     * @see net.minecraft.entity.player.PlayerEntity#readCustomDataFromNbt(NbtCompound)
+     * @see net.minecraft.server.PlayerManager#createPlayer(GameProfile, PlayerPublicKey)
+     */
     public static void registerEvents(Config config) {
         if (config.SYNC_INVENTORY) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {

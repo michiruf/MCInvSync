@@ -5,8 +5,8 @@ import mc.microconfig.ConfigData;
 
 public class Config implements ConfigData {
 
-    @Comment("Allowed values: \"SQLITE\" | \"MYSQL\"")
-    public String DATABASE_TYPE = "H2";
+    @Comment("Allowed values: \"SQLITE\" | \"MYSQL\" | \"POSTGRES\"")
+    public String DATABASE_TYPE = "SQLITE";
 
     // Sqlite
     public String SQLITE_PATH = "/path/to/database/InvSync.db";
@@ -17,6 +17,13 @@ public class Config implements ConfigData {
     public String MYSQL_PORT = "3306";
     public String MYSQL_USERNAME = "username";
     public String MYSQL_PASSWORD = "password";
+
+    // Postgres
+    public String POSTGRES_DATABASE = "InvSync";
+    public String POSTGRES_ADDRESS = "127.0.0.1";
+    public String POSTGRES_PORT = "5432";
+    public String POSTGRES_USERNAME = "username";
+    public String POSTGRES_PASSWORD = "password";
 
     @Comment("Sync settings")
     public boolean SYNC_INVENTORY = true;
