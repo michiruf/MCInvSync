@@ -6,18 +6,6 @@ plugins {
 allprojects {
     // This can get extracted into a root build.gradle if needed
     ext {
-        getCurrentShortRevision = {
-            // Got from https://github.com/PaperMC/Velocity/blob/dev/3.0.0/build.gradle
-            new ByteArrayOutputStream().withStream { os ->
-                exec {
-                    executable = "git"
-                    args = ["rev-parse", "HEAD"]
-                    standardOutput = os
-                }
-                return os.toString().trim().substring(0, 8)
-            }
-        }
-
         getLatestTag = {
             new ByteArrayOutputStream().withStream { os ->
                 exec {
@@ -42,7 +30,7 @@ allprojects {
     }
 
     try {
-        project.version = "${project.ext.getLatestTag()}-${project.ext.getCurrentCommitCount()}-${project.ext.getCurrentShortRevision()}"
+        project.version = "${project.ext.getLatestTag()}-${project.ext.getCurrentCommitCount()}"
     } catch (Exception ignored) {
         println('Either git is not set up properly, or there is no tag yet in the repository. Falling back to version \'0\'')
         project.version = '0'
