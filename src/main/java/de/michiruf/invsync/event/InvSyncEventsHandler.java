@@ -21,6 +21,14 @@ public class InvSyncEventsHandler {
      * @see net.minecraft.server.PlayerManager#createPlayer(GameProfile, PlayerPublicKey)
      */
     public static void registerEvents(Config config) {
+        // Synchronize achievements first for them not to get triggered by inventory updates
+        // Of cause this just registers the event, and does not specify the execution order explicitly
+        // but registering this first might already help
+        if (config.SYNC_ADVANCEMENTS) {
+            InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).writeAdvancementData(playerData.advancements));
+            InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> playerData.advancements = ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).readAdvancementData());
+        }
+
         if (config.SYNC_INVENTORY) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {
                 player.getInventory().readNbt(playerData.inventory);
@@ -84,11 +92,6 @@ public class InvSyncEventsHandler {
                     effects.add(effect.writeNbt(new NbtCompound()));
                 playerData.effects = effects;
             });
-        }
-
-        if (config.SYNC_ADVANCEMENTS) {
-            InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).writeAdvancementData(playerData.advancements));
-            InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> playerData.advancements = ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).readAdvancementData());
         }
     }
 }
