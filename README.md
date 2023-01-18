@@ -1,17 +1,13 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+[![Download on modrinth](https://github.com/modrinth/art/blob/main/Branding/Badge/badge-dark__184x72.png?raw=true)](https://modrinth.com/mod/mr-invsync)
 
 
-# InvSync
+# MR InvSync
 
-<img src="https://raw.githubusercontent.com/michiruf/MCInvSync/master/src/main/resources/assets/invsync/icon.png" width="300" height="300">
-
-This is a fabric mod that Allows you to sync player inventories, health, food level, experience, score, status effects
-and advancements across multiple servers or single player minecraft worlds! This is accomplished using a sql database
-(SQLite and MySQL supported. SQLite will be setup automatically, you must set up MySQL). Most mods should have no
-problem running alongside, and modded items will also be synchronized.
-
-[![name](https://github.com/modrinth/art/blob/main/Branding/Badge/badge-dark__184x72.png?raw=true)](https://modrinth.com/mod/mr-invsync)
+This is a fabric mod that allows you to sync player inventories, health, food level, experience, score, status effects
+and advancements across multiple servers or single player minecraft worlds.
+SQLite, MySQL and Postgres are supported as data backends.
 
 
 ## Why this fork?
@@ -20,26 +16,24 @@ This mod was initially forked from MrNavaStar. His original mod can be found on
 [github](https://github.com/MrNavaStar/InvSync) and [modrinth](https://modrinth.com/mod/invsync).
 Reasons for this fork are:
 
-* Source Code was not published on release (see [here](https://github.com/MrNavaStar/InvSync/issues/21))
-* The mod caused the server thread to sleep on player join, which got fixed, but the sleep call was still in the repository
-* Database handling was messed up by using an all-in-one table for the player data defined in [SQLib](https://github.com/MrNavaStar/SQLib)
-* For each SQL call a database connection was established
+* At the time the project was forked, the database handling was messed up by using an all-in-one table for the player 
+  data defined in [SQLib](https://github.com/MrNavaStar/SQLib)
+* At the time the project was forked, for each SQL call a database connection was established
+* Having a separate upstream for production environment testing
+* Details are list in [issue #1](https://github.com/michiruf/MCInvSync/issues/1)
 
-You can support MrNavaStar by [buying him a coffee!](https://ko-fi.com/mrnavastar)
-
-## Requirements
-
-* This mod requires [Fabric API](https://modrinth.com/mod/fabric-api)
-* You can get the mod on [Modrith](https://modrinth.com/mod/mr-invsync)
+You can support MrNavaStar by [buying him a coffee!](https://ko-fi.com/mrnavastar).
 
 
-## Getting Started
+## Installation
 
-Setup is very simple. Drop the mod into your mods folder on all the servers you want to sync. Starting a server will
-generate a config. The mod will not run until you edit the config.
+This mod requires **Fabric** and **[Fabric API](https://modrinth.com/mod/fabric-api)**.
 
-* Configs MUST be identical between all participating servers in order for the mod to function correctly.
-* This mod is known to have issues with: **GolfV**
+This mod is available on [modrinth](https://modrinth.com/mod/mr-invsync) with slug `mr-invsync`.
+The project source is available on [github/michiruf](https://github.com/michiruf/MCInvSync) with the latest
+readme [here](https://github.com/michiruf/MCInvSync/blob/master/README.md).
+
+The configuration of the database must be identical between all servers that shall sync the inventory.
 
 
 ## Example configuration
@@ -74,7 +68,6 @@ INITIAL_SYNC_OVERWRITE_ENABLED=true
 INITIAL_SYNC_SERVER_NAME=ServerA
 ```
 
-## Issues And Requests
+## License
 
-If you find any bugs or glitches, be sure to make a bug report under issues and I will do my best to fix it! Just as
-well if you have a cool idea for something that I should add, let me know and I will consider adding it!
+[MIT License](https://github.com/michiruf/MCInvSync/blob/master/LICENSE)

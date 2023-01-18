@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "invsync",
+  "id": "mr-invsync",
   "version": "${version}",
-  "name": "InvSync",
+  "name": "MR InvSync",
   "description": "",
   "authors": [
     "michiruf",
