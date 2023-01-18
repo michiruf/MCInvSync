@@ -37,6 +37,8 @@ public class Config implements ConfigData {
     public boolean SYNC_ADVANCEMENTS = true;
     public boolean SYNCHRONIZATION_DELAY = true;
     public int SYNCHRONIZATION_DELAY_SECONDS = 1;
+    @Comment("Allowed values: \"SLEEP\" | \"TIMER\"")
+    public String SYNCHRONIZATION_DELAY_METHOD = "SLEEP";
 
     @Comment("Initial synchronization settings")
     public boolean INITIAL_SYNC_OVERWRITE_ENABLED = false;

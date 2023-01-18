@@ -7,7 +7,10 @@ import de.michiruf.invsync.data.entity.PlayerData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.Level;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,20 +26,29 @@ public class PlayerDataService {
             loadPlayerImpl(player, database, config);
             return;
         }
-        // The reason, why this delay is needed, is that some proxy server might connect
+
+        // The reason, why this delay might be needed, is that some proxy server might connect
         // the player to the next server before disconnecting the player from the previous
         // server. To avoid race conditions, we just go for a timeout on loading the new
         // inventory data
         // Unfortunately, fabric does not have a scheduler, so we just go with the good old
-        // plain java thread and sleep
-        new Thread(() -> {
-            try {
-                TimeUnit.SECONDS.sleep(config.SYNCHRONIZATION_DELAY_SECONDS);
-                loadPlayerImpl(player, database, config);
-            } catch (InterruptedException e) {
-                Logger.logException(Level.ERROR, e);
-            }
-        }).start();
+        // plain java thread and sleep, or we go with the java timer schedule method
+        switch (config.SYNCHRONIZATION_DELAY_METHOD) {
+            case "SLEEP" -> new Thread(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(config.SYNCHRONIZATION_DELAY_SECONDS);
+                    loadPlayerImpl(player, database, config);
+                } catch (InterruptedException e) {
+                    Logger.logException(Level.ERROR, e);
+                }
+            }).start();
+            case "TIMER" -> new Timer().schedule(
+                    new RunnableTimerTask(() -> loadPlayerImpl(player, database, config)),
+                    config.SYNCHRONIZATION_DELAY_SECONDS * 1000L);
+            default -> throw new IllegalArgumentException(MessageFormat.format(
+                    "Synchronization delay method is set to an unknown value \"{0}\"",
+                    config.SYNCHRONIZATION_DELAY_METHOD));
+        }
     }
 
     private static void loadPlayerImpl(ServerPlayerEntity player, ORMLite database, Config config) {
@@ -83,5 +95,23 @@ public class PlayerDataService {
                 Logger.logException(Level.ERROR, e);
             }
         }, e -> Logger.logException(Level.ERROR, e));
+    }
+
+    private static class RunnableTimerTask extends TimerTask {
+
+        private final Runnable runnable;
+
+        public RunnableTimerTask(Runnable runnable) {
+            this.runnable = runnable;
+        }
+
+        @Override
+        public void run() {
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                Logger.logException(Level.ERROR, e);
+            }
+        }
     }
 }
