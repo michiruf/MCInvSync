@@ -8,14 +8,7 @@ import de.michiruf.invsync.data.PersistenceUtil;
  */
 public class StringArrayPersister extends AbstractStringPersister<String[]> {
 
-    private static final StringArrayPersister singleTon = new StringArrayPersister();
-
-    @SuppressWarnings("unused")
-    public static StringArrayPersister getSingleton() {
-        return singleTon;
-    }
-
-    private StringArrayPersister() {
+    public StringArrayPersister() {
         super(new Class[]{String[].class}, false);
     }
 

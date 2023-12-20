@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import de.michiruf.invsync.Config;
+import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificDatabaseField;
 import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificOverload;
 import net.minecraft.nbt.NbtCompound;
@@ -99,9 +99,9 @@ public class PlayerData {
     public void prepareSave(Config config) {
         date = java.sql.Date.from(Instant.now());
 
-        if (config.INITIAL_SYNC_OVERWRITE_ENABLED &&
-                !Arrays.asList(initializedServers).contains(config.INITIAL_SYNC_SERVER_NAME)) {
-            initializedServers = ArrayUtils.add(initializedServers, config.INITIAL_SYNC_SERVER_NAME);
+        if (config.initialSync.initialSyncOverwriteEnabled &&
+                !Arrays.asList(initializedServers).contains(config.initialSync.initialSyncServerName)) {
+            initializedServers = ArrayUtils.add(initializedServers, config.initialSync.initialSyncServerName);
         }
     }
 }

@@ -1,22 +1,24 @@
 package de.michiruf.invsync;
 
+import de.michiruf.invsync.config.Config;
+import de.michiruf.invsync.config.ConfigWrapper;
 import de.michiruf.invsync.data.ORMLite;
 import de.michiruf.invsync.data.PersistenceUtil;
 import de.michiruf.invsync.event.DelegatingEventsHandler;
 import de.michiruf.invsync.event.InvSyncEventsHandler;
-import mc.microconfig.MicroConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.ServerAdvancementLoader;
 import org.apache.logging.log4j.Level;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 
 public class InvSync implements ModInitializer {
 
     public static InvSync instance;
+    public Config config;
 
-    public Config config = MicroConfig.getOrCreate(InvSync.class.getSimpleName(), new Config());
     public ORMLite database;
     public ServerAdvancementLoader advancementLoader;
 
@@ -24,30 +26,41 @@ public class InvSync implements ModInitializer {
     public void onInitialize() {
         Logger.log(Level.INFO, "Initializing InvSync...");
         instance = this;
+        initConfig();
         initDatabase();
         registerEvents();
         Logger.log(Level.INFO, "Initialized InvSync");
     }
 
+    private void initConfig() {
+        try {
+            config = ConfigWrapper.load().config;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void initDatabase() {
         try {
             PersistenceUtil.registerCustomPersisters();
-            database = switch (config.DATABASE_TYPE) {
-                case "SQLITE" -> ORMLite.connectSQLITE(config.SQLITE_PATH, config.DEBUG_DELETE_TABLES);
-                case "MYSQL" -> ORMLite.connectMySQL(
-                        config.MYSQL_DATABASE,
-                        config.MYSQL_ADDRESS,
-                        config.MYSQL_PORT,
-                        config.MYSQL_USERNAME,
-                        config.MYSQL_PASSWORD,
-                        config.DEBUG_DELETE_TABLES);
-                case "POSTGRES" -> ORMLite.connectPostgres(
-                        config.POSTGRES_DATABASE,
-                        config.POSTGRES_ADDRESS,
-                        config.POSTGRES_PORT,
-                        config.POSTGRES_USERNAME,
-                        config.POSTGRES_PASSWORD,
-                        config.DEBUG_DELETE_TABLES);
+            database = switch (config.databaseType) {
+                case SQLITE -> ORMLite.connectSQLITE(config.sqlite.path, config.debugDeleteTables);
+                case MYSQL -> ORMLite.connect(
+                        "mysql",
+                        config.mysql.database,
+                        config.mysql.address,
+                        config.mysql.port,
+                        config.mysql.username,
+                        config.mysql.password,
+                        config.debugDeleteTables);
+                case POSTGRES -> ORMLite.connect(
+                        "postgres",
+                        config.postgres.database,
+                        config.postgres.address,
+                        config.postgres.port,
+                        config.postgres.username,
+                        config.postgres.password,
+                        config.debugDeleteTables);
                 default -> null;
             };
         } catch (Exception e) {
@@ -58,7 +71,7 @@ public class InvSync implements ModInitializer {
         }
 
         if (database == null) {
-            Logger.log(Level.ERROR, MessageFormat.format("Configured database type {0} is not available", config.DATABASE_TYPE));
+            Logger.log(Level.ERROR, MessageFormat.format("Configured database type {0} is not available", config.databaseType));
             System.exit(1);
         }
     }

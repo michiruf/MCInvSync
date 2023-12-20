@@ -9,14 +9,7 @@ import de.michiruf.invsync.data.PersistenceUtil;
  */
 public class JsonElementPersister extends AbstractStringPersister<JsonElement> {
 
-    private static final JsonElementPersister singleTon = new JsonElementPersister();
-
-    @SuppressWarnings("unused")
-    public static JsonElementPersister getSingleton() {
-        return singleTon;
-    }
-
-    private JsonElementPersister() {
+    public JsonElementPersister() {
         super(new Class[]{JsonElement.class}, true);
     }
 

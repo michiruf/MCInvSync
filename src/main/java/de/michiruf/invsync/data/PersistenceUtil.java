@@ -17,9 +17,9 @@ public class PersistenceUtil {
 
     public static void registerCustomPersisters() {
         DataPersisterManager.registerDataPersisters(
-                JsonElementPersister.getSingleton(),
-                NbtCompoundPersister.getSingleton(),
-                NbtListPersister.getSingleton(),
-                StringArrayPersister.getSingleton());
+                new JsonElementPersister(),
+                new NbtCompoundPersister(),
+                new NbtListPersister(),
+                new StringArrayPersister());
     }
 }

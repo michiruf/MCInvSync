@@ -1,93 +1,60 @@
+import de.michiruf.gradle.findversion.FindVersion
+
 plugins {
-    id 'fabric-loom' version '1.0.12'
-    id 'com.modrinth.minotaur' version '2.+'
+    id 'java'
+    id 'fabric-loom' version '1.4-SNAPSHOT'
 }
 
-allprojects {
-    // This can get extracted into a root build.gradle if needed
-    ext {
-        getLatestTag = {
-            new ByteArrayOutputStream().withStream { os ->
-                exec {
-                    executable = "git"
-                    args = ["describe", "--tags", "--abbrev=0"]
-                    standardOutput = os
-                }
-                return os.toString().trim()
-            }
-        }
+apply from: 'build.allprojects.gradle'
+apply from: 'build.versions.gradle'
 
-        getCurrentCommitCount = {
-            new ByteArrayOutputStream().withStream { os ->
-                exec {
-                    executable = "git"
-                    args = ["rev-list", "--all", "--count"]
-                    standardOutput = os
-                }
-                return os.toString().trim()
-            }
-        }
-    }
+def minecraftVersion = project.minecraftVersion as String ?: '1.19.1'
+def minecraftVersionDefinitions = ext.minecraftVersionDefinitions
+def minecraftVersionDefinition = minecraftVersionDefinitions[minecraftVersion]
+project.version = "${project.version}+${minecraftVersion}"
 
-    try {
-        project.version = "${project.ext.getLatestTag()}-${project.ext.getCurrentCommitCount()}"
-    } catch (Exception ignored) {
-        println('Either git is not set up properly, or there is no tag yet in the repository. Falling back to version \'0\'')
-        project.version = '0'
-    }
-    project.group = 'michiruf'
+sourceSets {
+    main.java.srcDirs = [
+            'src/main/java',
+            //"src/versionedFeature/${FindVersion.findClosestLowerOrEqualVersionInDirectory(file('src/versionedFeature'), minecraftVersion)}"
+    ]
 }
 
 repositories {
+    mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url "https://maven.shedaniel.me/" }
-    mavenCentral()
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // Configuration microconfig library
-    modImplementation(include('com.github.P03W:Microconfig:2.2.1'))
+    // Minecraft and fabric
+    minecraft "com.mojang:minecraft:${minecraftVersion}"
+    mappings "net.fabricmc:yarn:${minecraftVersionDefinition['mappings']}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${minecraftVersionDefinition['fabric']}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${minecraftVersionDefinition['fabricApi']}"
 
     // OrmLite
-    modImplementation(include('com.j256.ormlite:ormlite-jdbc:6.1'))
-    modImplementation(include('org.xerial:sqlite-jdbc:3.40.0.0'))
-    modImplementation(include('mysql:mysql-connector-java:8.0.30'))
-    modImplementation(include('org.postgresql:postgresql:42.5.1'))
+    modImplementation include('com.j256.ormlite:ormlite-jdbc:6.1')
+    modImplementation include('org.xerial:sqlite-jdbc:3.40.0.0')
+    modImplementation include('mysql:mysql-connector-java:8.0.30')
+    modImplementation include('org.postgresql:postgresql:42.5.1')
 
     // Tests
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 }
 
-modrinth {
-    projectId = 'mr-invsync'
-    versionNumber = project.version
-    versionType = project.version.contains('SNAPSHOT') ? 'alpha' : 'release'
-    gameVersions = ['1.19.1', '1.19.2', '1.19.3']
-    loaders = ['fabric']
-    dependencies {
-        required.project 'fabric-api'
-    }
-    uploadFile = remapJar
-    syncBodyFrom = rootProject.file("README.md").text
-
-    // Use the environment variable `$MODRINTH_TOKEN` for the token
-    // token = 'mySecretToken'
-}
-tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
-
 processResources {
-    inputs.property "version", project.version
-    filteringCharset "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+    var replaceProperties = [
+            version  : project.version,
+            minecraft: minecraftVersion,
+            mappings : minecraftVersionDefinition['mappings'],
+            fabric   : minecraftVersionDefinition['fabric'],
+            fabricApi: minecraftVersionDefinition['fabricApi']
+    ]
+    inputs.properties replaceProperties
+    filteringCharset 'UTF-8'
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
     }
 }
 
@@ -108,7 +75,6 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
-    archivesBaseName = 'invsync'
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.
     // If you remove this line, sources will not be generated.

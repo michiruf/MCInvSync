@@ -1,6 +1,6 @@
 package de.michiruf.invsync.event;
 
-import de.michiruf.invsync.Config;
+import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.data.ORMLite;
 import de.michiruf.invsync.data.entity.PlayerData;
@@ -22,7 +22,7 @@ public class PlayerDataService {
     public static void loadPlayer(ServerPlayerEntity player, ORMLite database, Config config) {
         Logger.log(Level.DEBUG, "Player JOIN event received");
 
-        if (!config.SYNCHRONIZATION_DELAY) {
+        if (!config.syncOptions.applySynchronizationDelay) {
             loadPlayerImpl(player, database, config);
             return;
         }
@@ -33,21 +33,21 @@ public class PlayerDataService {
         // inventory data
         // Unfortunately, fabric does not have a scheduler, so we just go with the good old
         // plain java thread and sleep, or we go with the java timer schedule method
-        switch (config.SYNCHRONIZATION_DELAY_METHOD) {
-            case "SLEEP" -> new Thread(() -> {
+        switch (config.syncOptions.synchronizationDelayType) {
+            case SLEEP -> new Thread(() -> {
                 try {
-                    TimeUnit.SECONDS.sleep(config.SYNCHRONIZATION_DELAY_SECONDS);
+                    TimeUnit.SECONDS.sleep(config.syncOptions.synchronizationDelaySeconds);
                     loadPlayerImpl(player, database, config);
                 } catch (InterruptedException e) {
                     Logger.logException(Level.ERROR, e);
                 }
             }).start();
-            case "TIMER" -> new Timer().schedule(
+            case TIMER -> new Timer().schedule(
                     new RunnableTimerTask(() -> loadPlayerImpl(player, database, config)),
-                    config.SYNCHRONIZATION_DELAY_SECONDS * 1000L);
+                    config.syncOptions.synchronizationDelaySeconds * 1000L);
             default -> throw new IllegalArgumentException(MessageFormat.format(
                     "Synchronization delay method is set to an unknown value \"{0}\"",
-                    config.SYNCHRONIZATION_DELAY_METHOD));
+                    config.syncOptions.synchronizationDelayType));
         }
     }
 
@@ -63,8 +63,8 @@ public class PlayerDataService {
                 // If initial sync enabled, sync mode OVERWRITE and the server name is not contained in the
                 // initial servers list, we do not need to process the data here, because the data should get
                 // lost by the overwrite mechanism anyway
-                if (config.INITIAL_SYNC_OVERWRITE_ENABLED &&
-                        !Arrays.asList(playerData.initializedServers).contains(config.INITIAL_SYNC_SERVER_NAME)) {
+                if (config.initialSync.initialSyncOverwriteEnabled &&
+                        !Arrays.asList(playerData.initializedServers).contains(config.initialSync.initialSyncServerName)) {
                     Logger.log(Level.INFO, "Player JOIN event not processed because data shell be overwritten");
                     return;
                 }

@@ -1,7 +1,7 @@
 package de.michiruf.invsync.event;
 
 import com.mojang.authlib.GameProfile;
-import de.michiruf.invsync.Config;
+import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
@@ -24,12 +24,12 @@ public class InvSyncEventsHandler {
         // Synchronize achievements first for them not to get triggered by inventory updates
         // Of cause this just registers the event, and does not specify the execution order explicitly
         // but registering this first might already help
-        if (config.SYNC_ADVANCEMENTS) {
+        if (config.sync.advancements) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).writeAdvancementData(playerData.advancements));
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> playerData.advancements = ((PlayerAdvancementTrackerAccessor) player.getAdvancementTracker()).readAdvancementData());
         }
 
-        if (config.SYNC_INVENTORY) {
+        if (config.sync.inventory) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {
                 player.getInventory().readNbt(playerData.inventory);
                 player.getInventory().selectedSlot = playerData.selectedSlot;
@@ -40,12 +40,12 @@ public class InvSyncEventsHandler {
             });
         }
 
-        if (config.SYNC_ENDER_CHEST) {
+        if (config.sync.enderChest) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> player.getEnderChestInventory().readNbtList(playerData.enderChest));
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> playerData.enderChest = player.getEnderChestInventory().toNbtList());
         }
 
-        if (config.SYNC_FOOD_LEVEL) {
+        if (config.sync.foodLevel) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> player.getHungerManager().readNbt(playerData.hunger));
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> {
                 NbtCompound nbt = new NbtCompound();
@@ -54,17 +54,17 @@ public class InvSyncEventsHandler {
             });
         }
 
-        if (config.SYNC_HEALTH) {
+        if (config.sync.health) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> player.setHealth(playerData.health));
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> playerData.health = player.getHealth());
         }
 
-        if (config.SYNC_SCORE) {
+        if (config.sync.score) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> player.setScore(playerData.score));
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> playerData.score = player.getScore());
         }
 
-        if (config.SYNC_XP_LEVEL) {
+        if (config.sync.xpLevel) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {
                 player.experienceLevel = playerData.xp;
                 player.experienceProgress = playerData.xpProgress;
@@ -77,7 +77,7 @@ public class InvSyncEventsHandler {
             });
         }
 
-        if (config.SYNC_STATUS_EFFECTS) {
+        if (config.sync.statusEffects) {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {
                 NbtList effects = playerData.effects;
                 if (effects != null) {

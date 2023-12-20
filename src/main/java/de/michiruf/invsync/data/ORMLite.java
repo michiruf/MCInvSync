@@ -26,15 +26,8 @@ public class ORMLite implements AutoCloseable {
         }
     }
 
-    public static ORMLite connectMySQL(String database, String host, String port, String username, String password, boolean debugDeleteTables) throws Exception {
-        var url = MessageFormat.format("jdbc:mysql://{1}:{2}/{0}?serverTimezone=UTC", database, host, port);
-        try (var connection = new JdbcConnectionSource(url, username, password)) {
-            return new ORMLite(connection, debugDeleteTables);
-        }
-    }
-
-    public static ORMLite connectPostgres(String database, String host, String port, String username, String password, boolean debugDeleteTables) throws Exception {
-        var url = MessageFormat.format("jdbc:postgresql://{1}:{2}/{0}?serverTimezone=UTC", database, host, port);
+    public static ORMLite connect(String type, String database, String host, int port, String username, String password, boolean debugDeleteTables) throws Exception {
+        var url = MessageFormat.format("jdbc:{0}://{2}:{3}/{1}?serverTimezone=UTC", type, database, host, port);
         try (var connection = new JdbcConnectionSource(url, username, password)) {
             return new ORMLite(connection, debugDeleteTables);
         }

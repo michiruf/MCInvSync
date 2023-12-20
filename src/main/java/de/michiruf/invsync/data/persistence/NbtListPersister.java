@@ -12,14 +12,7 @@ import org.apache.logging.log4j.Level;
  */
 public class NbtListPersister extends AbstractStringPersister<NbtList> {
 
-    private static final NbtListPersister singleTon = new NbtListPersister();
-
-    @SuppressWarnings("unused")
-    public static NbtListPersister getSingleton() {
-        return singleTon;
-    }
-
-    private NbtListPersister() {
+    public NbtListPersister() {
         super(new Class[]{NbtList.class}, true);
     }
 
