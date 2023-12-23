@@ -1,0 +1,10 @@
+server-type:
+  - Spigot:
+      - "1.14"
+
+users:
+  - "MinecraftGamer_Z"
+
+plugin: "./target/PlacedBlockCtrlZ-1.0.0.jar"
+provider: "192.168.33.10"
+world-type: "DEFAULT"

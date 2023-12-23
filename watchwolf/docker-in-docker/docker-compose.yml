@@ -1,0 +1,14 @@
+watchwolf:
+  container_name: watchwolf
+  build: .
+  ports:
+    - '80:80'
+  environment:
+    AAA: 'AAA'
+  volumes:
+    - './DATA/:/root/WatchWolf/'
+    - '/var/run/docker.sock:/var/run/docker.sock'
+    - '/etc/timezone:/etc/timezone:ro'
+  privileged: true
+  tty: true
+  restart: always

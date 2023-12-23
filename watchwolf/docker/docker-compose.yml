@@ -1,0 +1,25 @@
+watchwolf_server:
+  container_name: watchwolf_server
+  build: server
+  ports:
+    - '80:80'
+  environment:
+    AAA: 'AAA'
+  volumes:
+    - './DATA/SERVER/:/WatchWolf/'
+    - '/etc/timezone:/etc/timezone:ro'
+  tty: true
+  restart: always
+
+watchwolf_client:
+  container_name: watchwolf_client
+  build: client
+  ports:
+    - '80:80'
+  environment:
+    AAA: 'AAA'
+  volumes:
+    - './DATA/CLIENT/:/WatchWolf/'
+    - '/etc/timezone:/etc/timezone:ro'
+  tty: true
+  restart: always

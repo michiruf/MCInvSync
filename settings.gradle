@@ -5,9 +5,27 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         gradlePluginPortal()
+
+        // Used for submodule junit-ext-builtbroken
+        // Used for submodule junit-ext-mcjunitlib
+        maven { url = 'https://maven.minecraftforge.net/' }
     }
+}
+
+// Used for submodule junit-ext-builtbroken
+// Used for submodule junit-ext-mcjunitlib
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
 }
 
 // TODO This anyhow gives an error here, but did not in AllayFollowAlways?
 // https://youtrack.jetbrains.com/issue/IDEA-317606/Changing-only-the-case-of-the-Gradle-root-project-name-causes-exception-while-importing-project-java.lang.IllegalStateException
 //rootProject.name = 'invsync'
+
+
+//include ':junit-ext-builtbroken'
+//project(':junit-ext-builtbroken').projectDir = file('junit-ext-builtbroken')
+//include ':junit-ext-mcjunitlib'
+//project(':junit-ext-mcjunitlib').projectDir = file('junit-ext-mcjunitlib')
+include ':watchwolf'
+project(':watchwolf').projectDir = file('watchwolf')

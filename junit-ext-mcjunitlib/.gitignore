@@ -1,0 +1,17 @@
+# Reverse gitignore - explicitly include files
+*
+!*/
+!.gitignore
+
+# Source code and build script
+!.github/**
+!gradle/**
+!src/**
+
+# Metadata
+!build.gradle
+!gradle.properties
+!gradlew
+!gradlew.bat
+!LICENSE.md
+!README.md

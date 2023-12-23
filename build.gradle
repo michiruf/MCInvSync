@@ -20,12 +20,6 @@ sourceSets {
     ]
 }
 
-repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url "https://maven.shedaniel.me/" }
-}
-
 dependencies {
     // Minecraft and fabric
     minecraft "com.mojang:minecraft:${minecraftVersion}"
@@ -40,7 +34,23 @@ dependencies {
     modImplementation include('org.postgresql:postgresql:42.5.1')
 
     // Tests
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+
+    // Tests unneeded?
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.1'
+    testImplementation 'net.fabricmc:dev-launch-injector:0.2.1+build.8'
+
+//    testImplementation 'net.fabricmc:fabric-test-framework:0.4.0'
+//    testImplementation 'net.fabricmc.fabric.api.gametest.v1'
+
+    // @see https://github.com/FabricMC/fabric-loader/blob/master/junit/src/main/java/net/fabricmc/loader/impl/junit/FabricLoaderLauncherSessionListener.java
+    //testImplementation "net.fabricmc:fabric-loader-junit:${minecraftVersionDefinition['fabric']}"
+
+    // Auto Service for ServiceLoader
+    testCompileOnly testAnnotationProcessor('com.google.auto.service:auto-service:1.1.1')
+
+    //testImplementation project(':junit-ext-mcjunitlib')
 }
 
 processResources {
