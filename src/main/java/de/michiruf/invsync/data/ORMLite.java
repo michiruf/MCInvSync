@@ -6,8 +6,10 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.data.custom_schema.OverloadableDatabaseTableConfig;
 import de.michiruf.invsync.data.entity.PlayerData;
+import org.apache.logging.log4j.Level;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -27,8 +29,9 @@ public class ORMLite implements AutoCloseable {
     }
 
     public static ORMLite connect(String type, String database, String host, int port, String username, String password, boolean debugDeleteTables) throws Exception {
-        var url = MessageFormat.format("jdbc:{0}://{2}:{3}/{1}?serverTimezone=UTC", type, database, host, port);
+        var url = MessageFormat.format("jdbc:{0}://{2}:3306/{1}?serverTimezone=UTC", type, database, host);
         try (var connection = new JdbcConnectionSource(url, username, password)) {
+            Logger.log(Level.INFO, "Connected: " + url);
             return new ORMLite(connection, debugDeleteTables);
         }
     }
