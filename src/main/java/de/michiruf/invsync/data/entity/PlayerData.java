@@ -7,13 +7,17 @@ import com.j256.ormlite.table.DatabaseTable;
 import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificDatabaseField;
 import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificOverload;
+import dev.emi.trinkets.api.SlotReference;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.util.Pair;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -86,6 +90,16 @@ public class PlayerData {
             )
     })
     public JsonElement advancements = new JsonObject();
+
+
+    @DatabaseField
+    @DatabaseTypeSpecificDatabaseField({
+            @DatabaseTypeSpecificOverload(
+                    typeName = "MySQL",
+                    databaseField = @DatabaseField(columnDefinition = "LONGTEXT")
+            )
+    })
+    public JsonElement trinkets = new JsonObject();
 
     @SuppressWarnings("unused")
     public PlayerData() {

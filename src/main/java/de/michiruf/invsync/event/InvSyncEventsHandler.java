@@ -1,13 +1,19 @@
 package de.michiruf.invsync.event;
 
 import com.mojang.authlib.GameProfile;
+import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
+import dev.emi.trinkets.api.TrinketComponent;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.encryption.PlayerPublicKey;
+import org.apache.logging.log4j.Level;
+
+import java.util.Optional;
 
 /**
  * @author Michael Ruf
@@ -33,10 +39,26 @@ public class InvSyncEventsHandler {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {
                 player.getInventory().readNbt(playerData.inventory);
                 player.getInventory().selectedSlot = playerData.selectedSlot;
+                Optional<TrinketComponent> tc = TrinketsApi.getTrinketComponent(player);
+                if (tc.isPresent() && playerData.trinkets != null) {
+                    tc.get().getAllEquipped().clear();
+                    tc.get().getAllEquipped().addAll(playerData.trinkets);
+                }
             });
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> {
                 playerData.inventory = player.getInventory().writeNbt(new NbtList());
                 playerData.selectedSlot = player.getInventory().selectedSlot;
+                Optional<TrinketComponent> tc = TrinketsApi.getTrinketComponent(player);
+                Logger.log(Level.INFO, "Saving trinkets");
+                if (tc.isPresent()) {
+                    Logger.log(Level.INFO, "Get All Equipped trinkets");
+                    playerData.trinkets = tc.get().getAllEquipped();
+                    if (playerData.trinkets != null) {
+                        Logger.log(Level.INFO, "Found: " + playerData.trinkets);
+                    }
+                } else {
+                    Logger.log(Level.INFO, "Trinket component not present");
+                }
             });
         }
 
