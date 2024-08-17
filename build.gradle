@@ -24,7 +24,9 @@ dependencies {
     // Minecraft and fabric
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings "net.fabricmc:yarn:${minecraftVersionDefinition['mappings']}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${minecraftVersionDefinition['fabric']}"
+    // TODO Currently disabled to use the newest for tests
+    //modImplementation "net.fabricmc:fabric-loader:${minecraftVersionDefinition['fabric']}"
+    modImplementation 'net.fabricmc:fabric-loader:0.15.3'
     modImplementation "net.fabricmc.fabric-api:fabric-api:${minecraftVersionDefinition['fabricApi']}"
 
     // OrmLite
@@ -49,6 +51,9 @@ dependencies {
 
     // Auto Service for ServiceLoader
     testCompileOnly testAnnotationProcessor('com.google.auto.service:auto-service:1.1.1')
+
+    // Fake player // TODO For later
+    // https://github.com/CafeteriaGuild/fake-player-api
 
     //testImplementation project(':junit-ext-mcjunitlib')
 }

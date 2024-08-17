@@ -46,7 +46,17 @@ public class KnotServerStartTest {
         System.setProperty("fabric.log.disableAnsi", "false");
         System.setProperty("fabric.remapClasspathFile", "C:\\dev\\projects\\InvSync\\.gradle\\loom-cache\\remapClasspath.txt");
         TestGameProvider.register();
-        Knot.launch(new String[]{"nogui"}, EnvType.SERVER);
+        //Knot.launch(new String[]{"nogui"}, EnvType.SERVER);
+        //Knot.launch(new String[]{"--help"}, EnvType.SERVER);
+
+        System.setProperty("user.dir", "C:\\TEST");
+        Knot.launch(new String[]{
+                "nogui",
+                "--port", "12345",
+                "--serverId", "TEST",
+                //"--gameDir", "C:\\TEST", // No effect on servers
+                "--universe", "TEST1"
+        }, EnvType.SERVER);
     }
 
     private void startupUsingReflection() throws Throwable {
