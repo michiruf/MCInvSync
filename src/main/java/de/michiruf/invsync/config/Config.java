@@ -36,7 +36,6 @@ public class Config {
     public InitialSyncConfig initialSync = new InitialSyncConfig();
 
     public enum DatabaseType {
-
         SQLITE,
         MYSQL,
         POSTGRES
