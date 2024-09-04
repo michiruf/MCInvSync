@@ -1,19 +1,42 @@
 package de.michiruf.invsync.event;
 
+import com.google.common.collect.Maps;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.mixin_accessor.PlayerAdvancementTrackerAccessor;
+import dev.emi.trinkets.api.SlotType;
 import dev.emi.trinkets.api.TrinketComponent;
+import dev.emi.trinkets.api.TrinketInventory;
 import dev.emi.trinkets.api.TrinketsApi;
+import net.minecraft.SharedConstants;
+import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.nbt.visitor.StringNbtWriter;
 import net.minecraft.network.encryption.PlayerPublicKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import org.apache.logging.log4j.Level;
 
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import static net.minecraft.datafixer.fix.BlockEntitySignTextStrictJsonFix.GSON;
 
 /**
  * @author Michael Ruf
@@ -27,6 +50,9 @@ public class InvSyncEventsHandler {
      * @see net.minecraft.server.PlayerManager#createPlayer(GameProfile, PlayerPublicKey)
      */
     public static void registerEvents(Config config) {
+
+        final String DATA_VERSION_PROPERTY = "DataVersion";
+
         // Synchronize achievements first for them not to get triggered by inventory updates
         // Of cause this just registers the event, and does not specify the execution order explicitly
         // but registering this first might already help
@@ -39,26 +65,50 @@ public class InvSyncEventsHandler {
             InvSyncEvents.FETCH_PLAYER_DATA.register((player, playerData) -> {
                 player.getInventory().readNbt(playerData.inventory);
                 player.getInventory().selectedSlot = playerData.selectedSlot;
-                Optional<TrinketComponent> tc = TrinketsApi.getTrinketComponent(player);
-                if (tc.isPresent() && playerData.trinkets != null) {
-                    tc.get().getAllEquipped().clear();
-                    tc.get().getAllEquipped().addAll(playerData.trinkets);
-                }
+                TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> {
+                    Logger.log(Level.INFO, "Loading trinkets");
+                    // Delete all existing trinkets? maybe not needed
+                    trinkets.getAllEquipped().clear();
+                    Type type = new TypeToken<Map<String, JsonObject>>(){}.getType();
+                    Map<String, JsonObject> map = GSON.fromJson(playerData.trinkets, type);
+                    if (map != null) {
+                        map.forEach((key, value) -> {
+                            String[] split = key.split("/");
+                            String group = split[0];
+                            String slot = split[1];
+                            int index = Integer.parseInt(split[2]);
+                            Map<String, TrinketInventory> slots = trinkets.getInventory().get(group);
+                            if (slots != null) {
+                                TrinketInventory inv = slots.get(slot);
+                                if (inv != null && index < inv.size()) {
+                                    inv.setStack(index, jsonToStack(value));
+                                }
+                            }
+                        });
+                    } else {
+                        Logger.log(Level.INFO, "Could not load trinkets, invalid or null json");
+                    }
+                });
             });
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> {
                 playerData.inventory = player.getInventory().writeNbt(new NbtList());
                 playerData.selectedSlot = player.getInventory().selectedSlot;
-                Optional<TrinketComponent> tc = TrinketsApi.getTrinketComponent(player);
                 Logger.log(Level.INFO, "Saving trinkets");
-                if (tc.isPresent()) {
-                    Logger.log(Level.INFO, "Get All Equipped trinkets");
-                    playerData.trinkets = tc.get().getAllEquipped();
-                    if (playerData.trinkets != null) {
-                        Logger.log(Level.INFO, "Found: " + playerData.trinkets);
-                    }
-                } else {
-                    Logger.log(Level.INFO, "Trinket component not present");
-                }
+                TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> {
+                    Logger.log(Level.INFO, "Loop All trinkets");
+                    Map<String, JsonObject> toSave = Maps.newHashMap();
+                    trinkets.forEach((ref, stack) -> {
+                        TrinketInventory inventory = ref.inventory();
+                        SlotType slotType = inventory.getSlotType();
+                        int index = ref.index();
+                        String newRef = slotType.getGroup() + "/" + slotType.getName() + "/" + index;
+                        if (stack.getCount() > 0) {
+                            Logger.log(Level.INFO, "Found: " + newRef);
+                            toSave.put(newRef, stackToJson(stack));
+                        }
+                    });
+                    playerData.trinkets = GSON.toJsonTree(toSave);
+                });
             });
         }
 
@@ -115,5 +165,29 @@ public class InvSyncEventsHandler {
                 playerData.effects = effects;
             });
         }
+    }
+
+    static JsonObject stackToJson(ItemStack stack) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("item", stack.getItem().toString());
+        obj.addProperty("Count", stack.getCount());
+        if (stack.hasNbt()) {
+            obj.addProperty("nbt_c", new StringNbtWriter().apply(stack.getNbt()));
+        }
+        return obj;
+    }
+
+    static ItemStack jsonToStack(JsonObject obj) {
+        final Item item = JsonHelper.getItem(obj, "item");
+        final int count = JsonHelper.getInt(obj, "Count");
+        ItemStack stack = new ItemStack(item, count);
+        if (JsonHelper.hasString(obj, "nbt_c")) {
+            final String c = JsonHelper.getString(obj, "nbt_c");
+            try {
+                stack.setNbt(StringNbtReader.parse(c));
+            } catch (CommandSyntaxException ignore0) {
+            }
+        }
+        return stack;
     }
 }

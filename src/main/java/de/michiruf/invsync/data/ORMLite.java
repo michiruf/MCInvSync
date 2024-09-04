@@ -29,7 +29,7 @@ public class ORMLite implements AutoCloseable {
     }
 
     public static ORMLite connect(String type, String database, String host, int port, String username, String password, boolean debugDeleteTables) throws Exception {
-        var url = MessageFormat.format("jdbc:{0}://{2}:3306/{1}?serverTimezone=UTC", type, database, host);
+        var url = MessageFormat.format("jdbc:{0}://{2}:{3,number,#}/{1}?serverTimezone=UTC", type, database, host, port);
         try (var connection = new JdbcConnectionSource(url, username, password)) {
             Logger.log(Level.INFO, "Connected: " + url);
             return new ORMLite(connection, debugDeleteTables);
