@@ -169,25 +169,21 @@ public class InvSyncEventsHandler {
 
     static JsonObject stackToJson(ItemStack stack) {
         JsonObject obj = new JsonObject();
-        obj.addProperty("item", stack.getItem().toString());
-        obj.addProperty("Count", stack.getCount());
-        if (stack.hasNbt()) {
-            obj.addProperty("nbt_c", new StringNbtWriter().apply(stack.getNbt()));
-        }
+        obj.addProperty("item", stack.writeNbt(new NbtCompound()).toString());
         return obj;
     }
 
     static ItemStack jsonToStack(JsonObject obj) {
-        final Item item = JsonHelper.getItem(obj, "item");
-        final int count = JsonHelper.getInt(obj, "Count");
-        ItemStack stack = new ItemStack(item, count);
-        if (JsonHelper.hasString(obj, "nbt_c")) {
-            final String c = JsonHelper.getString(obj, "nbt_c");
-            try {
-                stack.setNbt(StringNbtReader.parse(c));
-            } catch (CommandSyntaxException ignore0) {
-            }
+        final String item = JsonHelper.getString(obj, "item");
+        Logger.log(Level.INFO, "Decoding: " + item);
+        try {
+            NbtCompound nbt = StringNbtReader.parse(item);
+            Logger.log(Level.INFO, "Decoded: " + nbt.toString());
+            ItemStack itemStack = ItemStack.fromNbt(nbt);
+            Logger.log(Level.INFO, "Found: " + itemStack.toString());
+            return itemStack;
+        } catch (CommandSyntaxException e) {
+            return ItemStack.EMPTY;
         }
-        return stack;
     }
 }

@@ -9,21 +9,17 @@ import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificDatabaseField;
 import de.michiruf.invsync.data.custom_schema.DatabaseTypeSpecificOverload;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * @author Michael Ruf
- * @since 2023-01-05
- */
-@DatabaseTable(tableName = "player_data")
-public class PlayerData {
+@DatabaseTable(tableName = "player_data_history")
+public class PlayerDataHistory {
+    @DatabaseField(generatedId = true)
+    public long id;
 
-    @DatabaseField(id = true)
+    @DatabaseField
     public String playerUuid;
 
     @DatabaseField
@@ -34,6 +30,9 @@ public class PlayerData {
 
     @DatabaseField
     public Date date;
+
+    @DatabaseField
+    public Date creationDate;
 
     @DatabaseField
     @DatabaseTypeSpecificDatabaseField({
@@ -80,7 +79,6 @@ public class PlayerData {
     })
     public NbtList effects = new NbtList();
 
-    // JsonNull.INSTANCE should be the most clear initial value, but then things might break
     @DatabaseField
     @DatabaseTypeSpecificDatabaseField({
             @DatabaseTypeSpecificOverload(
@@ -101,20 +99,16 @@ public class PlayerData {
     public JsonElement trinkets = new JsonObject();
 
     @SuppressWarnings("unused")
-    public PlayerData() {
+    public PlayerDataHistory() {
         // ORMLite needs a no-arg constructor
     }
 
-    public PlayerData(UUID id) {
+    public PlayerDataHistory(UUID id, Date date) {
         playerUuid = id.toString();
+        this.creationDate = date;
     }
 
     public void prepareSave(Config config) {
         date = java.sql.Date.from(Instant.now());
-
-        if (config.initialSync.initialSyncOverwriteEnabled &&
-                !Arrays.asList(initializedServers).contains(config.initialSync.initialSyncServerName)) {
-            initializedServers = ArrayUtils.add(initializedServers, config.initialSync.initialSyncServerName);
-        }
     }
 }
