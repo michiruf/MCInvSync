@@ -1,14 +1,20 @@
 package de.michiruf.invsync.event;
 
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.Where;
 import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.data.ORMLite;
 import de.michiruf.invsync.data.entity.PlayerData;
+import de.michiruf.invsync.data.entity.PlayerDataHistory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.Level;
 
 import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -83,12 +89,53 @@ public class PlayerDataService {
         database.transaction(() -> {
             try {
                 PlayerData playerData = database.playerDataDao.queryForId(player.getUuidAsString());
-                if (playerData == null)
+                if (playerData == null) {
                     playerData = new PlayerData(player.getUuid());
+                }
+
+                playerData.playerUsername = player.getDisplayName().getString();
 
                 InvSyncEvents.SAVE_PLAYER_DATA.invoker().handle(player, playerData);
                 playerData.prepareSave(config);
                 database.playerDataDao.createOrUpdate(playerData);
+
+                Logger.log(Level.DEBUG, "Player DISCONNECT event processed");
+            } catch (Exception e) {
+                Logger.logException(Level.ERROR, e);
+            }
+        }, e -> Logger.logException(Level.ERROR, e));
+
+        // Save history
+        database.transaction(() -> {
+            try {
+                Date insertDate = java.sql.Date.from(Instant.now());
+                PlayerDataHistory history = new PlayerDataHistory(player.getUuid(), insertDate);
+
+                PlayerData playerData = database.playerDataDao.queryForId(player.getUuidAsString());
+                if (playerData != null) {
+                    history.creationDate = playerData.date;
+                    history.playerUsername = playerData.playerUsername;
+                    history.advancements = playerData.advancements;
+                    history.effects = playerData.effects;
+                    history.health = playerData.health;
+                    history.enderChest = playerData.enderChest;
+                    history.inventory = playerData.inventory;
+                    history.hunger = playerData.hunger;
+                    history.initializedServers = playerData.initializedServers;
+                    history.playerUuid = playerData.playerUuid;
+                    history.xp = playerData.xp;
+                    history.xpProgress = playerData.xpProgress;
+                    history.trinkets = playerData.trinkets;
+                    history.score = playerData.score;
+                    history.selectedSlot = playerData.selectedSlot;
+                }
+
+                history.prepareSave(config);
+                database.playerDataHistoryDao.create(history);
+
+                DeleteBuilder<PlayerDataHistory, String> db = database.playerDataHistoryDao.deleteBuilder();
+                db.where().le("creationDate", java.sql.Date.from(Instant.now().minus(30, ChronoUnit.DAYS)));
+                db.delete();
 
                 Logger.log(Level.DEBUG, "Player DISCONNECT event processed");
             } catch (Exception e) {
