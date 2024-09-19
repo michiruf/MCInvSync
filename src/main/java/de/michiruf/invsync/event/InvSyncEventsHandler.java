@@ -68,7 +68,7 @@ public class InvSyncEventsHandler {
                 TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> {
                     Logger.log(Level.INFO, "Loading trinkets");
                     // Delete all existing trinkets? maybe not needed
-                    trinkets.getAllEquipped().clear();
+                    trinkets.getInventory().clear();
                     Type type = new TypeToken<Map<String, JsonObject>>(){}.getType();
                     Map<String, JsonObject> map = GSON.fromJson(playerData.trinkets, type);
                     if (map != null) {
