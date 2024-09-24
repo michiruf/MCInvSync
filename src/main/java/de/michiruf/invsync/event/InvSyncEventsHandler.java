@@ -21,6 +21,7 @@ import net.minecraft.advancement.AdvancementProgress;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -67,8 +68,20 @@ public class InvSyncEventsHandler {
                 player.getInventory().selectedSlot = playerData.selectedSlot;
                 TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> {
                     Logger.log(Level.INFO, "Loading trinkets");
-                    // Delete all existing trinkets? maybe not needed
-                    trinkets.getInventory().clear();
+                    // This loop removes old trinkets
+                    trinkets.forEach((ref, stack) -> {
+                        TrinketInventory inventory = ref.inventory();
+                        SlotType slotType = inventory.getSlotType();
+                        int index = ref.index();
+                        Map<String, TrinketInventory> slots = trinkets.getInventory().get(slotType.getGroup());
+                        for (var entry : slots.entrySet()) {
+                            TrinketInventory inv = slots.get(entry.getKey());
+                            if (inv != null && index < inv.size()) {
+                                inv.setStack(index, ItemStack.EMPTY);
+                            }
+                        }
+                    });
+                    // this sets new trinkets
                     Type type = new TypeToken<Map<String, JsonObject>>(){}.getType();
                     Map<String, JsonObject> map = GSON.fromJson(playerData.trinkets, type);
                     if (map != null) {
@@ -79,15 +92,20 @@ public class InvSyncEventsHandler {
                             int index = Integer.parseInt(split[2]);
                             Map<String, TrinketInventory> slots = trinkets.getInventory().get(group);
                             if (slots != null) {
-                                TrinketInventory inv = slots.get(slot);
-                                if (inv != null && index < inv.size()) {
-                                    inv.setStack(index, jsonToStack(value));
+                                for (var entry : slots.entrySet()) {
+                                    TrinketInventory inv = slots.get(entry.getKey());
+                                    if (inv != null && entry.getKey().equals(slot) && index < inv.size()) {
+                                        Logger.log(Level.INFO, "Setting index: " + index + ", slot: " + slot);
+                                        inv.setStack(index, jsonToStack(value));
+                                        break;
+                                    }
                                 }
                             }
                         });
                     } else {
                         Logger.log(Level.INFO, "Could not load trinkets, invalid or null json");
                     }
+                    Logger.log(Level.INFO, "Update trinkets");
                 });
             });
             InvSyncEvents.SAVE_PLAYER_DATA.register((player, playerData) -> {

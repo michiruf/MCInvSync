@@ -22,8 +22,9 @@ public class InvSyncEvents {
                     InventorySaveManager.disableInventorySave(player);
                     player.networkHandler.disconnect(Text.of("Inventory could not be loaded correctly"));
                 }
-            else
+            else {
                 Logger.log(Level.WARN, "PlayerData is null");
+            }
     });
 
     public static final Event<PlayerDataHandler> SAVE_PLAYER_DATA = EventFactory.createArrayBacked(PlayerDataHandler.class, callbacks -> (player, playerData) -> {

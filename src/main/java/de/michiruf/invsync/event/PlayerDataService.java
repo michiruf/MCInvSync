@@ -133,10 +133,6 @@ public class PlayerDataService {
                 history.prepareSave(config);
                 database.playerDataHistoryDao.create(history);
 
-                DeleteBuilder<PlayerDataHistory, String> db = database.playerDataHistoryDao.deleteBuilder();
-                db.where().le("creationDate", java.sql.Date.from(Instant.now().minus(30, ChronoUnit.DAYS)));
-                db.delete();
-
                 Logger.log(Level.DEBUG, "Player DISCONNECT event processed");
             } catch (Exception e) {
                 Logger.logException(Level.ERROR, e);
