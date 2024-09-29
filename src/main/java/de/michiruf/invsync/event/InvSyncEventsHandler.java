@@ -95,7 +95,6 @@ public class InvSyncEventsHandler {
                                 for (var entry : slots.entrySet()) {
                                     TrinketInventory inv = slots.get(entry.getKey());
                                     if (inv != null && entry.getKey().equals(slot) && index < inv.size()) {
-                                        Logger.log(Level.INFO, "Setting index: " + index + ", slot: " + slot);
                                         inv.setStack(index, jsonToStack(value));
                                         break;
                                     }
@@ -113,7 +112,6 @@ public class InvSyncEventsHandler {
                 playerData.selectedSlot = player.getInventory().selectedSlot;
                 Logger.log(Level.INFO, "Saving trinkets");
                 TrinketsApi.getTrinketComponent(player).ifPresent(trinkets -> {
-                    Logger.log(Level.INFO, "Loop All trinkets");
                     Map<String, JsonObject> toSave = Maps.newHashMap();
                     trinkets.forEach((ref, stack) -> {
                         TrinketInventory inventory = ref.inventory();
@@ -121,7 +119,6 @@ public class InvSyncEventsHandler {
                         int index = ref.index();
                         String newRef = slotType.getGroup() + "/" + slotType.getName() + "/" + index;
                         if (stack.getCount() > 0) {
-                            Logger.log(Level.INFO, "Found: " + newRef);
                             toSave.put(newRef, stackToJson(stack));
                         }
                     });
@@ -193,13 +190,9 @@ public class InvSyncEventsHandler {
 
     static ItemStack jsonToStack(JsonObject obj) {
         final String item = JsonHelper.getString(obj, "item");
-        Logger.log(Level.INFO, "Decoding: " + item);
         try {
             NbtCompound nbt = StringNbtReader.parse(item);
-            Logger.log(Level.INFO, "Decoded: " + nbt.toString());
-            ItemStack itemStack = ItemStack.fromNbt(nbt);
-            Logger.log(Level.INFO, "Found: " + itemStack.toString());
-            return itemStack;
+            return ItemStack.fromNbt(nbt);
         } catch (CommandSyntaxException e) {
             return ItemStack.EMPTY;
         }
