@@ -33,7 +33,7 @@ public abstract class PlayerAdvancementTrackerMixin implements PlayerAdvancement
 
     @Shadow
     @Final
-    private Map<Advancement, AdvancementProgress> advancementToProgress;
+    private Map<Advancement, AdvancementProgress> progress;
 
     @Shadow
     protected abstract void initProgress(Advancement advancement, AdvancementProgress progress);
@@ -73,11 +73,11 @@ public abstract class PlayerAdvancementTrackerMixin implements PlayerAdvancement
         if (dynamic.get(DATA_VERSION_PROPERTY).asNumber().result().isEmpty()) {
             dynamic = dynamic.set(DATA_VERSION_PROPERTY, dynamic.createInt(1343));
         }
-        dynamic = dataFixer.update(
-                DataFixTypes.ADVANCEMENTS.getTypeReference(),
-                dynamic,
-                dynamic.get(DATA_VERSION_PROPERTY).asInt(0),
-                SharedConstants.getGameVersion().getWorldVersion());
+//        dynamic = dataFixer.update(
+//                DataFixTypes.ADVANCEMENTS.getTypeReference(),
+//                dynamic,
+//                dynamic.get(DATA_VERSION_PROPERTY).asInt(0),
+//                SharedConstants.getGameVersion().getWorldVersion());
         dynamic = dynamic.remove(DATA_VERSION_PROPERTY);
 
         var map = GSON.getAdapter(JSON_TYPE).fromJsonTree(dynamic.getValue());
@@ -107,7 +107,7 @@ public abstract class PlayerAdvancementTrackerMixin implements PlayerAdvancement
     @Override
     public synchronized JsonElement readAdvancementData() {
         Map<Identifier, AdvancementProgress> map = Maps.newHashMap();
-        for (var entry : advancementToProgress.entrySet()) {
+        for (var entry : progress.entrySet()) {
             AdvancementProgress advancementProgress = entry.getValue();
             if (!advancementProgress.isAnyObtained())
                 continue;
@@ -115,7 +115,7 @@ public abstract class PlayerAdvancementTrackerMixin implements PlayerAdvancement
         }
 
         JsonElement jsonElement = GSON.toJsonTree(map);
-        jsonElement.getAsJsonObject().addProperty(DATA_VERSION_PROPERTY, SharedConstants.getGameVersion().getWorldVersion());
+        jsonElement.getAsJsonObject().addProperty(DATA_VERSION_PROPERTY, SharedConstants.getGameVersion().getSaveVersion().toString());
         return jsonElement;
     }
 }

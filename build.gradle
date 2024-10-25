@@ -8,7 +8,8 @@ plugins {
 apply from: 'build.allprojects.gradle'
 apply from: 'build.versions.gradle'
 
-def minecraftVersion = project.minecraftVersion as String ?: '1.19.1'
+def minecraftVersion = project.minecraftVersion as String ?: '1.20.1'
+def trinkets_version = '3.7.1'
 def minecraftVersionDefinitions = ext.minecraftVersionDefinitions
 def minecraftVersionDefinition = minecraftVersionDefinitions[minecraftVersion]
 project.version = "${project.version}+${minecraftVersion}"
@@ -24,6 +25,15 @@ repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url "https://maven.shedaniel.me/" }
+
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        name = "Ladysnake Libs"
+        url = 'https://maven.ladysnake.org/releases'
+    }
 }
 
 dependencies {
@@ -41,6 +51,7 @@ dependencies {
 
     // Tests
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+    modImplementation "dev.emi:trinkets:${trinkets_version}"
 }
 
 processResources {
