@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class PlayerDataService {
 
     // fakeDimensionSwap is actually used to fix mods that need to reload when switching servers
-    public static void fakeDimensionSwap(ServerPlayerEntity player, MinecraftServer server) {
+    public static void fakeDimensionSwap(ServerPlayerEntity player, MinecraftServer server, Config config) {
         Logger.log(Level.INFO, "fake dimension swap start");
         ServerWorld currentWorld = (ServerWorld) player.getWorld();
         RegistryKey<World> fakeDimension = World.NETHER;
@@ -42,11 +42,11 @@ public class PlayerDataService {
         TickScheduler.schedule(() -> {
             // Send the packet to the client
             FabricDimensions.teleport(player, fakeWorld, new TeleportTarget(Vec3d.ZERO.add(128, 128, 128), Vec3d.ZERO, player.getYaw(), player.getPitch()));
-        }, 5);
+        }, 10);
         TickScheduler.schedule(() -> {
             FabricDimensions.teleport(player, currentWorld, new TeleportTarget(originalPos, Vec3d.ZERO, player.getYaw(), player.getPitch()));
             Logger.log(Level.INFO, "fake dimension swap end");
-        }, 10);
+        }, 10 + config.serverHopDelayTicks);
 
     }
 

@@ -97,8 +97,7 @@ public class InvSync implements ModInitializer {
     }
 
     private double calculateTPS() {
-        getServer().getTickTime();
-        return 20.0;
+        return getServer().getTickTime();
     }
 
     private long getTotalPlayerDeaths() {
