@@ -13,6 +13,8 @@ import de.michiruf.invsync.config.sync.SyncOptionsConfig;
 public class Config {
 
     public DatabaseType databaseType = DatabaseType.SQLITE;
+    public String serverName = "";
+    public int serverHopDelayTicks = 20;
     public boolean debugDeleteTables = false;
 
     public SqliteConfig sqlite = new SqliteConfig("/path/to/database/InvSync.db");

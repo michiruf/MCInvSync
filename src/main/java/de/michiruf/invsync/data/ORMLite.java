@@ -4,16 +4,20 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.data.custom_schema.OverloadableDatabaseTableConfig;
 import de.michiruf.invsync.data.entity.PlayerData;
 import de.michiruf.invsync.data.entity.PlayerDataHistory;
+import de.michiruf.invsync.data.entity.Statistics;
 import org.apache.logging.log4j.Level;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
 
 /**
@@ -40,6 +44,7 @@ public class ORMLite implements AutoCloseable {
     private final ConnectionSource connection;
     public final Dao<PlayerData, String> playerDataDao;
     public final Dao<PlayerDataHistory, String> playerDataHistoryDao;
+    public final Dao<Statistics, String> statisticsDao;
 
     public ORMLite(JdbcConnectionSource connection, boolean debugDeleteTables) throws SQLException {
         this.connection = connection;
@@ -59,6 +64,19 @@ public class ORMLite implements AutoCloseable {
         }
         TableUtils.createTableIfNotExists(connection, playerDataHistoryConfig);
         playerDataHistoryDao = DaoManager.createDao(connection, playerDataHistoryConfig);
+
+        DeleteBuilder<PlayerDataHistory, String> db = playerDataHistoryDao.deleteBuilder();
+        db.where().le("creationDate", java.sql.Date.from(Instant.now().minus(3, ChronoUnit.DAYS)));
+        db.delete();
+
+
+        //statistics table
+        var statisticsConfig = OverloadableDatabaseTableConfig.fromClass(connection.getDatabaseType(), Statistics.class);
+        if (debugDeleteTables) {
+            TableUtils.dropTable(connection, statisticsConfig, true);
+        }
+        TableUtils.createTableIfNotExists(connection, statisticsConfig);
+        statisticsDao = DaoManager.createDao(connection, statisticsConfig);
     }
 
     public void transaction(Runnable transaction) {

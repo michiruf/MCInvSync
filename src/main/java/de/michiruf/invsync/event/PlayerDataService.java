@@ -1,22 +1,26 @@
 package de.michiruf.invsync.event;
 
-import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.Where;
 import de.michiruf.invsync.config.Config;
 import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.data.ORMLite;
 import de.michiruf.invsync.data.entity.PlayerData;
 import de.michiruf.invsync.data.entity.PlayerDataHistory;
+import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.TeleportTarget;
+import net.minecraft.util.math.Vec3d;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
+import de.michiruf.invsync.scheduler.TickScheduler;
 
 import java.text.MessageFormat;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,6 +28,27 @@ import java.util.concurrent.TimeUnit;
  * @since 2023-01-05
  */
 public class PlayerDataService {
+
+    // fakeDimensionSwap is actually used to fix mods that need to reload when switching servers
+    public static void fakeDimensionSwap(ServerPlayerEntity player, MinecraftServer server, Config config) {
+        Logger.log(Level.INFO, "fake dimension swap start");
+        ServerWorld currentWorld = (ServerWorld) player.getWorld();
+        RegistryKey<World> fakeDimension = World.NETHER;
+        if (currentWorld.getDimensionEntry() == World.NETHER.getRegistry()) {
+            fakeDimension = World.END;
+        }
+        ServerWorld fakeWorld = server.getWorld(fakeDimension);
+        Vec3d originalPos = player.getPos();
+        TickScheduler.schedule(() -> {
+            // Send the packet to the client
+            FabricDimensions.teleport(player, fakeWorld, new TeleportTarget(Vec3d.ZERO.add(128, 128, 128), Vec3d.ZERO, player.getYaw(), player.getPitch()));
+        }, 10);
+        TickScheduler.schedule(() -> {
+            FabricDimensions.teleport(player, currentWorld, new TeleportTarget(originalPos, Vec3d.ZERO, player.getYaw(), player.getPitch()));
+            Logger.log(Level.INFO, "fake dimension swap end");
+        }, 10 + config.serverHopDelayTicks);
+
+    }
 
     public static void loadPlayer(ServerPlayerEntity player, ORMLite database, Config config) {
         Logger.log(Level.DEBUG, "Player JOIN event received");
@@ -132,10 +157,6 @@ public class PlayerDataService {
 
                 history.prepareSave(config);
                 database.playerDataHistoryDao.create(history);
-
-                DeleteBuilder<PlayerDataHistory, String> db = database.playerDataHistoryDao.deleteBuilder();
-                db.where().le("creationDate", java.sql.Date.from(Instant.now().minus(30, ChronoUnit.DAYS)));
-                db.delete();
 
                 Logger.log(Level.DEBUG, "Player DISCONNECT event processed");
             } catch (Exception e) {
