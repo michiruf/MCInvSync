@@ -11,6 +11,7 @@ import de.michiruf.invsync.Logger;
 import de.michiruf.invsync.data.custom_schema.OverloadableDatabaseTableConfig;
 import de.michiruf.invsync.data.entity.PlayerData;
 import de.michiruf.invsync.data.entity.PlayerDataHistory;
+import de.michiruf.invsync.data.entity.Statistics;
 import org.apache.logging.log4j.Level;
 
 import java.sql.SQLException;
@@ -43,6 +44,7 @@ public class ORMLite implements AutoCloseable {
     private final ConnectionSource connection;
     public final Dao<PlayerData, String> playerDataDao;
     public final Dao<PlayerDataHistory, String> playerDataHistoryDao;
+    public final Dao<Statistics, String> statisticsDao;
 
     public ORMLite(JdbcConnectionSource connection, boolean debugDeleteTables) throws SQLException {
         this.connection = connection;
@@ -66,6 +68,15 @@ public class ORMLite implements AutoCloseable {
         DeleteBuilder<PlayerDataHistory, String> db = playerDataHistoryDao.deleteBuilder();
         db.where().le("creationDate", java.sql.Date.from(Instant.now().minus(3, ChronoUnit.DAYS)));
         db.delete();
+
+
+        //statistics table
+        var statisticsConfig = OverloadableDatabaseTableConfig.fromClass(connection.getDatabaseType(), Statistics.class);
+        if (debugDeleteTables) {
+            TableUtils.dropTable(connection, statisticsConfig, true);
+        }
+        TableUtils.createTableIfNotExists(connection, statisticsConfig);
+        statisticsDao = DaoManager.createDao(connection, statisticsConfig);
     }
 
     public void transaction(Runnable transaction) {
